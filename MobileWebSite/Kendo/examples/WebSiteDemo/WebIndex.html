@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<script>
+function myFunction()
+{
+ alert("Hello World!");
+$("#myiframe").attr("src","http://www.w3school.com.cn/jquery");
+
+
+}
+</script>
+<head>
+   
+    <style>html { font-size: 12px; font-family: Arial, Helvetica, sans-serif; }</style>
+    <title></title>
+        <link href="../../styles/kendo.common.min.css" rel="stylesheet">
+    <link href="../../styles/kendo.rtl.min.css" rel="stylesheet">
+    <link href="../../styles/kendo.default.min.css" rel="stylesheet">
+    <link href="../../styles/kendo.dataviz.min.css" rel="stylesheet">
+    <link href="../../styles/kendo.dataviz.default.min.css" rel="stylesheet">
+    <link href="../../styles/kendo.mobile.all.min.css" rel="stylesheet" />
+    <script src="../../js/jquery.min.js"></script>
+    <script src="../../js/angular.min.js"></script>
+    <script src="../../js/kendo.all.min.js"></script>
+    <script src="http://cdn.kendostatic.com/2014.2.1008/js/kendo.all.min.js"></script>
+</head>
+<body>
+    <div data-role="view" id="drawer-home" data-layout="drawer-layout" data-title="我的订单">
+    <ul data-role="listview" class="inboxList">
+	<li data-icon="star"><a href="#drawer-starred" data-transition="none">home Items</a></li>
+        <li> 
+            <h2>所有订单</h2>
+           
+        </li>
+		 <li> 
+            <h2>未完成的订单</h2>
+           
+        </li>
+        
+    </ul>
+</div>
+
+<div data-role="view" id="drawer-sendorder" data-layout="drawer-layout" data-title="发出的订单">
+    <ul data-role="listview" class="inboxList">
+		<li data-icon="star"onclick="myFunction()"><a href="#drawer-sendordercomplete" data-transition="none">已完成订单</a></li>  
+		<li data-icon="star"><a href="#drawer-sendordernotcomplete" data-transition="none">未完成的订单</a></li>		
+	   
+    </ul>
+</div>
+<div data-role="view" id="drawer-sendordercomplete" data-layout="drawer-layout" data-title="已完成的订单">
+   <iframe id="myiframe" src=""></iframe>
+</div>
+<div data-role="view" id="drawer-receiveordernotcomplete" data-layout="drawer-layout" data-title="未完成的订单">
+    
+</div>
+<div data-role="view" id="drawer-receiveorder" data-layout="drawer-layout" data-title="接受的订单">
+    <ul data-role="listview" class="inboxList">
+		<li data-icon="star"><a href="#drawer-receiveordercomplete" data-transition="none">已完成订单</a></li>  
+		<li data-icon="star"><a href="#drawer-receiveordernotcomplete" data-transition="none">未完成的订单</a></li>		
+	   
+    </ul>
+</div>
+<div data-role="view" id="drawer-receiveordercomplete" data-layout="drawer-layout" data-title="已完成的订单">
+    
+</div>
+<div data-role="view" id="drawer-receiveordernotcomplete" data-layout="drawer-layout" data-title="未完成的订单">
+    
+</div>
+
+
+
+
+<div data-role="view" id="drawer-sendtranslation" data-layout="drawer-layout" data-title="发货物流信息">
+    <ul data-role="listview" class="inboxList">
+		<li data-icon="star"><a href="#drawer-sendtranslationcompelete" data-transition="none">对方已收货</a></li>  
+		<li data-icon="star"><a href="#drawer-sendtranslationnotcomplete" data-transition="none">对方未收货</a></li>		
+	   
+    </ul>
+</div>
+<div data-role="view" id="drawer-sendtranslationcompelete" data-layout="drawer-layout" data-title="对方已收货">
+    
+</div>
+<div data-role="view" id="drawer-sendtranslationnotcomplete" data-layout="drawer-layout" data-title="对方未收货">
+    
+</div>
+
+<div data-role="view" id="drawer-receivetranslation" data-layout="drawer-layout" data-title="收货物流信息">
+    <ul data-role="listview" class="inboxList">
+		<li data-icon="star"><a href="#drawer-receivetranslationcompelete" data-transition="none">我已收货</a></li>  
+		<li data-icon="star"><a href="#drawer-receivetranslationnotcomplete" data-transition="none">我未收货</a></li>		
+	   
+    </ul>
+</div>
+<div data-role="view" id="drawer-receivetranslationcompelete" data-layout="drawer-layout" data-title="我已收货">
+    
+</div>
+<div data-role="view" id="drawer-receivetranslationnotcomplete" data-layout="drawer-layout" data-title="我未收货">
+    
+</div>
+
+
+<div data-role="drawer" id="my-drawer" style="width: 230px" data-views="['drawer-home', 'drawer-sendorder', 'drawer-sendordercomplete','drawer-sendordernotcomplete','drawer-receiveorder', 'drawer-receiveordercomplete','drawer-receiveordernotcomplete','drawer-sendtranslation','drawer-sendtranslationcompelete','drawer-sendtranslationnotcomplete','drawer-receivetranslation','drawer-receivetranslationcompelete','drawer-receivetranslationnotcomplete']">
+    <ul data-role="listview" data-type="group">
+        <li>订单管理
+            <ul>
+                
+                <li data-icon="star"><a href="#drawer-sendorder" data-transition="none">发出的订单</a></li>
+                <li data-icon="compose"><a href="#drawer-receiveorder" data-transition="none">接受的订单</a></li>
+               
+            </ul>
+        </li>
+        <li>物流管理
+            <ul>
+                <li data-icon="sent"><a href="#drawer-sendtranslation" data-transition="none">发货信息查看</a></li>
+                <li data-icon="trash"><a href="#drawer-receivetranslation" data-transition="none">收货信息查看</a></li>
+               
+            </ul>
+        </li>
+       
+    </ul>
+</div>
+
+<div data-role="layout" data-id="drawer-layout">
+    <header data-role="header">
+        <div data-role="navbar">
+            <a data-role="button" data-rel="drawer" href="#my-drawer" data-icon="drawer-button" data-align="left"></a>
+            <span data-role="view-title"></span>
+            <a data-align="right" data-role="button" class="nav-button" href="#my-drawer">Index</a>
+        </div>
+    </header>
+</div>
+
+<script>
+    // reset global drawer instance, for demo purposes
+    kendo.mobile.ui.Drawer.current = null;
+</script>
+
+<style>
+    .km-ios #my-drawer .km-content, .km-android #my-drawer .km-content, .km-blackberry #my-drawer .km-content,
+    .km-ios #my-drawer .km-list > li, .km-android #my-drawer .km-list > li, .km-blackberry #my-drawer .km-list > li,
+    .km-ios #my-drawer .km-listview-link > .km-icon, .km-android #my-drawer .km-listview-link > .km-icon, .km-blackberry #my-drawer .km-listview-link > .km-icon,
+    .km-ios #my-drawer .km-list li > .km-icon, .km-android #my-drawer .km-list li > .km-icon, .km-blackberry #my-drawer .km-list li > .km-icon
+    {
+        background-color: #4e4e4e;
+        color: #fff;
+    }
+
+    .km-ios #my-drawer .km-group-title,
+    .km-blackberry #my-drawer .km-group-title
+    {
+        background-color: #6e6e6e;
+        color: #fff;
+    }
+
+    .km-drawer-button:before, .km-drawer-button:after  { content: "\E077"; }
+    .km-inbox:before, .km-inbox:after { content: "\E0B0"; }
+    .km-sent:before, .km-sent:after { content: "\E0C6"; }
+    .km-trash:before, .km-trash:after { content: "\E0C3"; }
+    .km-spam:before, .km-spam:after { content: "\E0C5"; }
+    .km-star:before, .km-star:after { content: "\E0D7"; }
+    .km-settings:before, .km-settings:after { content: "\E0DA"; }
+    .km-off:before, .km-off:after { content: "\E0B9"; }
+
+    .inboxList
+    {
+        font-size: .8em;
+    }
+
+    .inboxList p,
+    .inboxList h2,
+    .inboxList h3
+    {
+        margin: 5px 2px;
+    }
+
+    .inboxList p,
+    .inboxList h3
+    {
+        color: #777;
+    }
+
+    .inboxList h3.time
+    {
+        color: #369;
+        float: left;
+        margin-right: 10px;
+    }
+
+    #drawer-spam .spam
+    {
+        color: darkred;
+        background: currentcolor;
+        display: block;
+        margin: 2em;
+        font-size: 1.4em;
+    }
+
+    #drawer-spam .spam .km-text
+    {
+        color: white;
+    }
+</style>
+
+
+<script>
+
+    var app = new kendo.mobile.Application(document.body);
+</script>
+</body>
+</html>

@@ -1,0 +1,203 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Changelog for Kendo UI v2014.2.1008</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font: .75em/1.5 Tahoma, sans-serif;
+        }
+
+        h1 {
+            font-size: 2.2em;
+            font-size: normal;
+        }
+
+        h2 {
+            font-size: 2em;
+            font-weight: normal;
+
+            margin: 1.2em 0 .3em;
+            padding-bottom: .2em;
+        }
+
+        #page {
+            width: 50em;
+            margin: 0 auto 2em;
+            border-radius: 0 0 1em 1em;
+            box-shadow: 0 0 10px #ccc;
+            padding: 1em 2em 2em;
+        }
+
+        .poBoxIcon {
+            float: left;
+            font-size: 2em;
+            margin: 1.2em .5em 0 0;
+        }
+
+        .poTopLine {
+            border-top: 2px solid #e1e1e1;
+            margin: 17px 0 40px 0;
+        }
+    </style>
+
+    <base href="http://www.telerik.com/support/whats-new/kendo-ui-web/release-history">
+</head>
+<body>
+    <div id="page">
+        <h1 class="title">Release notes for Kendo UI v2014.2.1008</h1>
+
+        <h1>Components</h1>
+        <div class="tClear poTopLine">
+            <div class="poBoxIconText">
+                <p><strong>What's new</strong></p><ul><li>Ctrl+click opens links in new tabs in IE/Chrome</li><li>Adding DisableBouncyScrolling in an application using nativeScrolling in WP8 breaks scrolling of the application</li></ul>
+                <p><strong>What's fixed</strong></p><ul><li>iPad landscape dimensions no longer broken in iOS8 </li></ul>
+            </div>
+        </div>
+
+
+        <div class="tClear poTopLine">
+            <h2>ActionSheet</h2>
+            
+            <p><strong>What's fixed</strong></p><ul><li>ActionSheet item remains highlighted when pressed in Android</li></ul>
+        </div>
+        <div class="tClear poTopLine">
+            <h2>AutoComplete</h2>
+            
+            <p><strong>What's fixed</strong></p><ul><li>Popup height is not calculated correctly when header template is included</li></ul>
+        </div>
+        <div class="tClear poTopLine">
+            <h2>Button</h2>
+            
+            <p><strong>What's fixed</strong></p><ul><li>Button triggers 'Unspecified error' in IE when inside an iframe</li></ul>
+        </div>
+        <div class="tClear poTopLine">
+            <h2>Chart</h2>
+            
+            <p><strong>What's fixed</strong></p><ul><li>Date charts can hang when opened in Moscow time zone (RTZ2)</li><li>Last column is not always rendered in IE8</li><li>bar label with center position is not positioned correctly when the chart is clipped.</li><li>Ignore the axis plot bands if they are no in the current range</li><li>Chart AngularJS directive tries to parse the standard title attribute and fails</li><li>Error when hovering notes on series with tooltips</li><li>Error when interpolating 100% stacked area series with missing values</li><li>JavaScript error when hovering scatter chart with corsshairs</li></ul>
+        </div>
+        <div class="tClear poTopLine">
+            <h2>ComboBox</h2>
+            <p><strong>What's new</strong></p><ul><li>ComboBox performance suffers in Firefox</li></ul>
+            <p><strong>What's fixed</strong></p><ul><li>Widget does not send filter parameters when serverSorting is enabled and AngularJS intergration</li></ul>
+        </div>
+        <div class="tClear poTopLine">
+            <h2>DatePicker</h2>
+            
+            <p><strong>What's fixed</strong></p><ul><li>Assigning a null Angular model or a model with a missing key will not clear the value of Kendo UI widgets</li></ul>
+        </div>
+        <div class="tClear poTopLine">
+            <h2>DateTimePicker</h2>
+            
+            <p><strong>What's fixed</strong></p><ul><li>Assigning a null Angular model or a model with a missing key will not clear the value of Kendo UI widgets</li></ul>
+        </div>
+        <div class="tClear poTopLine">
+            <h2>Diagram</h2>
+            
+            <p><strong>What's fixed</strong></p><ul><li>mousewheel zooming does not work on touch devices</li></ul>
+        </div>
+        <div class="tClear poTopLine">
+            <h2>Editor</h2>
+            <p><strong>What's new</strong></p><ul><li>Allow script serialization to be suppressed</li><li>Inline editor does not position tools correctly in IE11</li></ul>
+            <p><strong>What's fixed</strong></p><ul><li>Line breaks at end of paragraph are removed when setting content through value()</li><li>Quotes in links are not html-encoded upon serializing</li><li>Editor does not reset the command buttons when value is reset</li><li>Arrow keys do not navigate between blank paragraphs in IE11</li><li>The "Create a M x N table" hint cannot be localized</li><li>Up arrow key navigation is prevent when link is inserted</li></ul>
+        </div>
+        <div class="tClear poTopLine">
+            <h2>Gantt</h2>
+            
+            <p><strong>What's fixed</strong></p><ul><li>Js error is thrown, when Esc is pressed upon row selection of non-navigatable gantt.</li></ul>
+        </div>
+        <div class="tClear poTopLine">
+            <h2>Globalization</h2>
+            
+            <p><strong>What's fixed</strong></p><ul><li>kendo.toString outputs timezone offset with wrong sign</li></ul>
+        </div>
+        <div class="tClear poTopLine">
+            <h2>Grid</h2>
+            
+            <p><strong>What's fixed</strong></p><ul><li>columnShow/columnHide event handlers cannot be bound via MVVM</li><li>Filter row cells do not have &amp;nbsp; when empty</li><li>Only first entry is shown in the autocomplete filter cell when column is bound to nested field</li><li>column sortable compare function is not applied when using column menu.</li><li>inline editing does not process angular directives</li><li>Fix incell editing with frozen columns IE9</li><li>Inconsistent behavior of the filter row when dataSource is defined outside the widget</li></ul>
+        </div>
+        <div class="tClear poTopLine">
+            <h2>MVVM</h2>
+            
+            <p><strong>What's fixed</strong></p><ul><li>columnShow/columnHide event handlers cannot be bound via MVVM</li></ul>
+        </div>
+        <div class="tClear poTopLine">
+            <h2>MaskedTextBox</h2>
+            
+            <p><strong>What's fixed</strong></p><ul><li>MaskedTextBox converts null value into а string</li></ul>
+        </div>
+        <div class="tClear poTopLine">
+            <h2>Menu</h2>
+            
+            <p><strong>What's fixed</strong></p><ul><li>menu close on click should close menu with anchor links</li></ul>
+        </div>
+        <div class="tClear poTopLine">
+            <h2>NumericTextBox</h2>
+            
+            <p><strong>What's fixed</strong></p><ul><li>Assigning a null Angular model or a model with a missing key will not clear the value of Kendo UI widgets</li></ul>
+        </div>
+        <div class="tClear poTopLine">
+            <h2>PivotGrid</h2>
+            <p><strong>What's new</strong></p><ul><li>Render a non-breaking space in empty cells of PivotGrid</li><li>PivotGrid selection api</li></ul>
+            
+        </div>
+        <div class="tClear poTopLine">
+            <h2>Router</h2>
+            <p><strong>What's new</strong></p><ul><li>Application.replace() does not update locations array correctly</li></ul>
+            
+        </div>
+        <div class="tClear poTopLine">
+            <h2>Scroller</h2>
+            
+            <p><strong>What's fixed</strong></p><ul><li>Elastic scrolling cannot be disabled in a Kendo UI Drawer</li></ul>
+        </div>
+        <div class="tClear poTopLine">
+            <h2>StockChart</h2>
+            
+            <p><strong>What's fixed</strong></p><ul><li>Ignore the axis plot bands if they are no in the current range</li><li>Candlestick downColor is applied to all following points</li></ul>
+        </div>
+        <div class="tClear poTopLine">
+            <h2>TabStrip</h2>
+            
+            <p><strong>What's fixed</strong></p><ul><li>Removing tabs does not call `kendo.destroy`</li><li>TabStrip flickers when navigating between tabs with different height in IE</li></ul>
+        </div>
+        <div class="tClear poTopLine">
+            <h2>TimePicker</h2>
+            
+            <p><strong>What's fixed</strong></p><ul><li>Assigning a null Angular model or a model with a missing key will not clear the value of Kendo UI widgets</li></ul>
+        </div>
+        <div class="tClear poTopLine">
+            <h2>ToolBar</h2>
+            
+            <p><strong>What's fixed</strong></p><ul><li>Overflow anchor icon is not hidden if a widget with popup is initialized in the overflow container</li><li>Disabling SplitButton does not disable its menu buttons</li></ul>
+        </div>
+        <div class="tClear poTopLine">
+            <h2>Tooltip</h2>
+            
+            <p><strong>What's fixed</strong></p><ul><li>The ToolTip is not automatically hidden on mouseleave when the ToolTip is initialized for a Button</li></ul>
+        </div>
+        <div class="tClear poTopLine">
+            <h2>TreeMap</h2>
+            
+            <p><strong>What's fixed</strong></p><ul><li>TreeMap leaf text template should render html</li></ul>
+        </div>
+        <div class="tClear poTopLine">
+            <h2>TreeView</h2>
+            
+            <p><strong>What's fixed</strong></p><ul><li>Read out ARIA level is off by 1</li></ul>
+        </div>
+        <div class="tClear poTopLine">
+            <h2>Upload</h2>
+            
+            <p><strong>What's fixed</strong></p><ul><li>Upload status is not vertically centered when remove action is not defined</li></ul>
+        </div>
+    </div>
+</body>
+</html>

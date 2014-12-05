@@ -1,0 +1,186 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+<h2>OrderDemo @ViewBag.mytitle</h2>
+
+<html>
+<head>
+
+
+    <style>
+        html {
+            font-size: 12px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+    </style>
+    <title></title>
+    <script src="~/Scripts/js/jquery.min.js"></script>
+    <script src="~/Scripts/js/kendo.all.min.js"></script>
+    <script src="~/Scripts/angular.min.js"></script>
+    <link href="~/Kendo/styles/kendo.common.min.css" rel="stylesheet" />
+    <link href="~/Kendo/styles/kendo.rtl.min.css" rel="stylesheet" />
+    <link href="~/Kendo/styles/kendo.default.min.css" rel="stylesheet" />
+    <link href="~/Kendo/styles/kendo.dataviz.min.css" rel="stylesheet" />
+    <link href="~/Kendo/styles/kendo.dataviz.default.min.css" rel="stylesheet" />
+    <link href="~/Kendo/styles/kendo.mobile.all.min.css" rel="stylesheet" />
+    <link href="~/Content/themes/website-searchbox.css" rel="stylesheet" />
+    <link href="~/Content/themes/div-item.css" rel="stylesheet" />
+</head>
+<body>
+
+    <div id="actionsheet-view" data-role="view" data-title="Inbox" data-init="mobileListViewLocalFiltering">
+        <div id="myheader" style="margin-top:2px">
+            <input id="status" style="width:35%;height:25px;" placeholder="Select status..." />
+            <br />
+        </div>
+        @*<div style="margin-top:10px">*@
+        <ul id="listsource" data-role="listview" data-source="mydataSource" data-template="inboxItem" class="inboxList"></ul>
+        @*</div>*@
+    </div>
+
+
+    <script type="script/x-kendo-template" id="inboxItem">
+        <div class="item">
+            <div class="item-inside">
+              <p1>订单号：#: orderNum #</p1>
+              <a class="reply" data-role="button"  onclick=OrderContent("#:orderID#")
+                  >订单详情</a>
+            </div>
+
+              #if(category==0)
+              {#
+                  <h4>发布方：#: orderSupplier#</h4>
+              #}else
+              {#
+                  <h4>承接方：#: orderSupplier#</h4>
+               #}#
+              <h4>订单状态：#: orderStatus#</h4>
+        </div>
+    </script>
+
+    <style scoped>
+        .reply {
+            float: right;
+            margin-right: 10px;
+        }
+
+        .inboxList {
+            font-size: .8em;
+        }
+
+        #actionsheet-view .km-listview {
+        }
+
+
+
+        #actionResult {
+            padding: 10px;
+            background: rgba(127,127,127,.5);
+            box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            margin: 0;
+        }
+
+        .km-ios #actionsheet-view .km-navbar {
+            background: -webkit-gradient(linear, 50% 0, 50% 100%, color-stop(0, rgba(255, 255, 255, 0.5)), color-stop(0.06, rgba(255, 255, 255, 0.45)), color-stop(0.5, rgba(255, 255, 255, 0.2)), color-stop(0.5, rgba(255, 255, 255, 0.15)), color-stop(1, rgba(100, 100, 100, 0))), url(../content/shared/images/patterns/pattern7.png);
+            background: -moz-linear-gradient(center top, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.45) 6%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.15) 50%, rgba(100, 100, 100, 0)), url(../content/shared/images/patterns/pattern7.png);
+        }
+
+            .km-ios #actionsheet-view .km-navbar .km-button {
+                background-color: #4A88B5;
+            }
+
+        .km-ios #actionsheet-view .km-content .km-button {
+            background: -webkit-gradient(linear, 50% 0, 50% 100%, color-stop(0, rgba(255, 255, 255, 0.5)), color-stop(0.06, rgba(255, 255, 255, 0.45)), color-stop(0.5, rgba(255, 255, 255, 0.2)), color-stop(0.5, rgba(255, 255, 255, 0.15)), color-stop(1, rgba(100, 100, 100, 0))), url(../content/shared/images/patterns/pattern1.png);
+            background: -moz-linear-gradient(center top, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.45) 6%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.15) 50%, rgba(100, 100, 100, 0)), url(../content/shared/images/patterns/pattern1.png);
+        }
+
+        .km-tablet .km-ios #actionsheet-view .km-view-title {
+            color: #fff;
+            text-shadow: 0 -1px rgba(0,0,0,.5);
+        }
+    </style>
+
+    <script>
+        function OrderContent(orderid) {
+            // alert(orderid);
+            var category = location.search.substr(1).split('&')[0].split('=')[1];
+            var urlbase = "/OrderDemo/OrderDetails?option=";
+            urlbase += orderid;
+            urlbase += "&category=";
+            urlbase += category;
+            //alert("test");
+            window.location.href = urlbase;
+
+        }
+    </script>
+    <script>
+
+        $("#status").kendoComboBox({
+            dataTextField: "text",
+            dataValueField: "value",
+            dataSource: [
+                { text: "合同未签订", value: 0 },
+                { text: "合同已签订", value: 1 },
+                { text: "订单正在生产", value: 2 },
+                { text: "订单生产完成", value: 3 },
+                { text: "配送完成", value: 4 },
+                { text: "客户全部签收", value: 5 },
+                { text: "客户已评论", value: 6 },
+                { text: "全部订单", value: 7 }
+
+            ],
+            select: onSelect,
+            filter: "contains",
+            suggest: true,
+            index: 7
+        });
+        var select = $("#status").data("kendoComboBox");
+
+
+        function onSelect(e) {
+            select = e.item.index();
+            location.reload();
+        }
+
+        var urlbase = "/OrderDemo/GetOrderList";
+        var category = location.search.substr(1).split('&')[0].split('=')[1];
+        var mydataSource = new kendo.data.DataSource({
+            transport: {
+                read: {
+                    type: "POST",
+                    url: urlbase,
+                    data:
+                        {
+                            option: select.value(),
+                            category: category
+                        },
+                    dataType: "json"
+                }
+            },
+        });
+
+        //console.info("mydataSource = " + mydataSource.transport.options);
+        var distributionStateData = [
+                      'orderSupplier',
+                      'orderStatus',
+                      'orderNum'
+        ];
+        $("#listsource").kendoMobileListView({
+            dataSource: mydataSource,
+            template: $("#inboxItem").text(),
+            filterable: {
+                field: distributionStateData[0] + distributionStateData[1] + distributionStateData[2],
+                //operator: "startswith"
+                operator: "contains"
+            },
+            //virtualViewSize: 100,
+            //endlessScroll: true
+        });
+
+        var app = new kendo.mobile.Application(document.body);
+    </script>
+</body>
+</html>
+

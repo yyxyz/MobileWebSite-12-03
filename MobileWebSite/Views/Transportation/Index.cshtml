@@ -1,0 +1,281 @@
+﻿@{
+    ViewBag.Title = "物流详情";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>物流详情</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <style>
+        html {
+            font-size: 12px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+    </style>
+    <script src="~/Scripts/js/jquery.min.js"></script>
+    <script src="~/Scripts/angular.min.js"></script>
+    <script src="~/Scripts/js/kendo.all.min.js"></script>
+    <link href="~/Kendo/styles/kendo.common.min.css" rel="stylesheet" />
+    <link href="~/Kendo/styles/kendo.rtl.min.css" rel="stylesheet" />
+    <link href="~/Kendo/styles/kendo.default.min.css" rel="stylesheet" />
+    <link href="~/Kendo/styles/kendo.dataviz.min.css" rel="stylesheet" />
+    <link href="~/Kendo/styles/kendo.dataviz.default.min.css" rel="stylesheet" />
+    <link href="~/Kendo/styles/kendo.mobile.all.min.css" rel="stylesheet" />
+    <link href="~/Content/themes/website-searchbox.css" rel="stylesheet" />
+    <link href="~/Content/themes/div-item.css" rel="stylesheet" />
+</head>
+<body>
+    <div id="actionsheet-view" data-role="view" data-title="Inbox" data-init="mobileListViewLocalFiltering">
+        <div id="myheader" style="margin-top:2px">
+            @*<input id="status" style="width:35%;height:25px;" placeholder="Select status..." />*@
+            <form id="searchForm" @*action=""*@ method="post">
+                <div style="list-style-type:none">
+                    <div id="searchout">
+                        <div>
+                            <div id="searchform">
+                                <input type="text" id="search_input" name="search">
+                                <div id="searchbutton"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @*</fieldset>*@
+            </form>
+            <br />
+        </div>
+        <div style="margin-top: 10px">
+            <ul id="listsource" data-role="listview" data-source="TransportSource" data-endless-scroll="false" data-template="transportItem" class="inboxList"></ul>
+        </div>
+    </div>
+
+    <script id="transportItem" type="script/x-kendo-template">
+        <div class="item">
+            <div class="item-inside">
+                <p1> 物流编号：#: TransportNumber#</p1>
+                <a class="reply" data-role="button" onclick=logisticsContent(#:distributionId#)> 物流详情 </a>
+            </div>
+            # if( category == 0){#
+                <h4> 发货方：#: consignor# </h4>
+            #} else if( category == 1){#
+                <h4> 收货方：#: consignee# </h4>
+            #}#
+            <h4> 物流状态：#: status# </h4>
+        </div>
+    </script>
+
+    <script>
+        String.prototype.GetValue = function (para) { //将url ？ 后面的链接以&符号进行分割
+            var reg = new RegExp("(^|&)" + para + "=([^&]*)(&|$)");
+            var r = this.substr(this.indexOf("\?") + 1).match(reg);
+            if (r != null) return unescape(r[2]); return null;
+        }
+        var str = location.search;  //获取当前页面url？后面的数值
+        str = decodeURI(str);
+        console.info("str = " + window.location.pathname + location.search)
+        var category = str.GetValue("category");
+        //var userID = Session["userId"].ToString().Trim();
+        //console.info( @ViewBag.ID);
+        // var userID = document.getElementById("userID").valueOf;
+        // console.info(userID);
+        var value = "发货";
+        var isSearch = 0;
+
+        value = str.GetValue("value");
+        isSearch = str.GetValue("isSearch");
+        if (isSearch != null)
+            console.log("99999 value = " + value + "isSearch = " + isSearch);
+        if (isSearch == null) isSearch = 0;
+        // string loginName = ParamUtil.getString(value, "login_name");
+        //value =decodeURI(value);
+
+
+        $("#searchbutton").click(function () {
+            value = document.getElementById("search_input").value;
+            if (value.length != 0) {
+                //console.log("1111111" + value);
+                //location.reload();
+                //value = new String(value.getBytes("ISO-8859-1"), "UTF-8");
+                // value = encodeURI(value);
+                isSearch = 1;
+                location.replace(encodeURI(window.location.pathname + '?category=' + category + '&value=' + value + '&isSearch=' + isSearch));
+                //console.log("3333333" + document.URL +"    " +isSearch);
+            } else {
+                isSearch = 0;
+                //console.log("222222" + value +"无输入值");
+            }
+        });
+
+        var TransportSource1 = new kendo.data.DataSource({
+            transport: {
+                read: {
+                    type: "POST",
+                    url: "/Transportation/GetTransportList",
+                    data:
+                                {
+                                    // enterpriseID: 10001,
+                                    category: category,
+                                    //transportState: 0,
+                                },
+                    dataType: "json"
+                }
+            },
+        });
+
+        var TransportSource2 = new kendo.data.DataSource({
+            transport: {
+                read: {
+                    type: "POST",
+                    url: "/Transportation/GetTransportList",
+                    data:
+                        {
+                            // enterpriseID: 10001,
+                            category: category,
+                            //transportState: 0,
+                        },
+                    dataType: "json"
+                }
+            },
+            //data: TransportSource,
+            filter: {
+                // leave data items which are "Food" or "Tea"
+                logic: "or",
+                filters: [
+                  {
+                      field: "consignee",
+                      operator: "contains",
+                      value: value
+                  },
+                  {
+                      field: "status",
+                      operator: "contains",
+                      value: value
+                  },
+                  {
+                      field: "TransportNumber",
+                      operator: "contains",
+                      value: value
+                  }
+                ]
+            },
+            //sort: { field: "TransportNumber", dir: "desc" },
+            //pageSize: 1,
+        });
+
+        //TransportSource2.fetch(function () {
+        //    var view = TransportSource2.view();
+        //    var va = "";
+        //    for (var i = 0; i < view.length; i++) {
+        //        va = va + view[i].consignee + " " + view[i].status + " ";
+        //    }
+        //    console.log("asdfasdfa "+ view.length); // displays "2"
+        //    console.log(va); // displays "Tea"
+        //    //console.log(view[1].name); // displays "Ham"
+        //    //return view.length;
+        //    console.log(TransportSource2.total()); // displays "John Doe"
+        //});
+
+        var TransportSource;
+        if (isSearch == 1) {
+            //console( (TransportSource2 == null) + "   465464654646456");
+            TransportSource = TransportSource2;
+        } else {
+            TransportSource = TransportSource1;
+        }
+
+
+
+        //function onsearch() {
+        //    //var value = document.getElementById("search_input").valueOf;
+        //    console.log(value);
+        //}
+
+        //$("#listsource").kendoMobileListView({
+        //    dataSource: TransportSource,
+        //    template: $("#transportItem").text(),
+        //    filterable: {
+        //        //logic: "or",
+        //        //filters: [
+        //        //  { field: "consignee", operator: "contains"},
+        //        //  { field: "status", operator: "contains" }
+        //        //]
+        //        field: ("consignee" || "consignor" || "status"),
+        //        operator: "contains"
+        //    },
+        //    virtualViewSize: 100,
+        //    //endlessScroll: true
+        //});
+
+        //$("#listsource").kendoMobileListView({
+        //    dataSource: mydataSource,
+        //    template: $("#inboxItem").text(),
+        //    filterable: {
+        //        field: "orderSupplier",
+        //        operator: "startswith"
+        //    },
+        //    //endlessScroll: true
+        //});
+
+        function logisticsContent(distributionId1) {
+            //alert("物流详情");
+            //window.location.replace("/OrderDemo.html"); //
+            //window.location = '/OrderDemo.html';
+            //window.location.href = '/OrderDemo.html';
+            //javascript: location.href = '/OrderDemo.html';
+            var urlbase = "/Transportation/TransportDetails?option=";
+            urlbase += distributionId1;
+            //urlbase = urlbase + "&userID=" + 10001;
+            urlbase += "&category=" + category;
+            location.replace(urlbase); //在新的标签页打开链接
+            //window.open("");
+        }
+    </script>
+    <style scoped>
+        .reply {
+            float: right;
+            margin-right: 10px;
+        }
+
+        .inboxList {
+            font-size: .8em;
+        }
+
+            .inboxList p,
+            .inboxList h2,
+            .inboxList h3 {
+                margin: 5px 2px;
+            }
+
+            .inboxList p,
+            .inboxList h3 {
+                color: #777;
+            }
+
+                .inboxList h3.time {
+                    color: #369;
+                    float: left;
+                    margin-right: 10px;
+                }
+    </style>
+
+    <script>
+        var app = new kendo.mobile.Application(document.body,
+        {
+            platform: 'IOS'
+        });
+    </script>
+
+    @*<div data-role="layout" data-id="Transport">
+            <header data-role="header">
+                <div data-role="navbar">物流详情</div>
+            </header>
+
+            <footer data-role="footer">
+                <div data-role="tabstrip">
+                    <a data-icon="home" href="#home"></a>
+                </div>
+            </footer>
+        </div>*@
+
+
+</body>
+</html>
