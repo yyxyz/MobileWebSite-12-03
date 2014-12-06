@@ -6,8 +6,6 @@
 
 <html>
 <head>
-
-
     <style>
         html {
             font-size: 12px;
@@ -29,24 +27,42 @@
 </head>
 <body>
 
-    <div id="actionsheet-view" data-role="view" data-title="Inbox" data-init="mobileListViewLocalFiltering">
+    <div data-role="view" data-title="Inbox" id="actionsheet-view" data-init="mobileListViewLocalFiltering">
+
+        @* <ul id="filterable-listview"></ul>*@
         <div id="myheader" style="margin-top:2px">
             <input id="status" style="width:35%;height:25px;" placeholder="Select status..." />
+            <form id="searchForm" action="" method="post">
+                <div style="list-style-type:none">
+                    <div id="searchout">
+                        <div>
+                            <div id="searchform">
+                                <input type="text" id="search_input" name="search">
+                                <div id="searchbutton" onclick="onsearch()"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @*</fieldset>*@
+            </form>
             <br />
         </div>
-        @*<div style="margin-top:10px">*@
-        <ul id="listsource" data-role="listview" data-source="mydataSource" data-template="inboxItem" class="inboxList"></ul>
-        @*</div>*@
+        <div style="margin-top:10px">
+            <ul id="listsource" data-role="listview" data-source="mydataSource" data-template="inboxItem" class="inboxList"></ul>
+        </div>
     </div>
 
 
     <script type="script/x-kendo-template" id="inboxItem">
+
         <div class="item">
             <div class="item-inside">
               <p1>订单号：#: orderNum #</p1>
               <a class="reply" data-role="button"  onclick=OrderContent("#:orderID#")
                   >订单详情</a>
-            </div>
+
+
+              </div>
 
               #if(category==0)
               {#
@@ -55,8 +71,11 @@
               {#
                   <h4>承接方：#: orderSupplier#</h4>
                #}#
+
               <h4>订单状态：#: orderStatus#</h4>
-        </div>
+
+
+              </div>
     </script>
 
     <style scoped>
@@ -137,15 +156,36 @@
             index: 7
         });
         var select = $("#status").data("kendoComboBox");
+        var category = location.search.substr(1).split('&')[0].split('=')[1];
+        var urlbase = "/OrderDemo/GetOrderList";
 
-
+        //把select的值传到后台
         function onSelect(e) {
             select = e.item.index();
+            //mydataSource = new kendo.data.DataSource({
+            //    transport: {
+            //        read: {
+            //            type: "POST",
+            //            url: urlbase,
+            //            data:
+            //                {
+            //                    option: select.value(),
+            //                    category: category
+            //                },
+            //            dataType: "json"
+            //        }
+            //    },
+
+            //});
             location.reload();
         }
+        function onsearch() {
 
-        var urlbase = "/OrderDemo/GetOrderList";
-        var category = location.search.substr(1).split('&')[0].split('=')[1];
+            location.reload();
+
+
+        }
+
         var mydataSource = new kendo.data.DataSource({
             transport: {
                 read: {
@@ -154,30 +194,15 @@
                     data:
                         {
                             option: select.value(),
-                            category: category
+                            category: category,
+                            content: $('#search_input').val()
                         },
                     dataType: "json"
                 }
             },
+
         });
 
-        //console.info("mydataSource = " + mydataSource.transport.options);
-        var distributionStateData = [
-                      'orderSupplier',
-                      'orderStatus',
-                      'orderNum'
-        ];
-        $("#listsource").kendoMobileListView({
-            dataSource: mydataSource,
-            template: $("#inboxItem").text(),
-            filterable: {
-                field: distributionStateData[0] + distributionStateData[1] + distributionStateData[2],
-                //operator: "startswith"
-                operator: "contains"
-            },
-            //virtualViewSize: 100,
-            //endlessScroll: true
-        });
 
         var app = new kendo.mobile.Application(document.body);
     </script>
