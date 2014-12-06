@@ -28,7 +28,7 @@
     <div id="actionsheet-view" data-role="view" data-title="Inbox" data-init="mobileListViewLocalFiltering">
         <div id="myheader" style="margin-top:2px">
             @*<input id="status" style="width:35%;height:25px;" placeholder="Select status..." />*@
-            <form id="searchForm" @*action=""*@ method="post">
+            <form id="searchForm" @*action=""*@ method="post" onsubmit=false>
                 <div style="list-style-type:none">
                     <div id="searchout">
                         <div>
@@ -44,7 +44,8 @@
             <br />
         </div>
         <div style="margin-top: 10px">
-            <ul id="listsource" data-role="listview" data-source="TransportSource" data-endless-scroll="false" data-template="transportItem" class="inboxList"></ul>
+            <ul id="listsource" data-role="listview" data-source="TransportSource" data-endless-scroll="false"
+                data-template="transportItem" class="inboxList"></ul>
         </div>
     </div>
 
@@ -64,44 +65,41 @@
     </script>
 
     <script>
+        /*用于对form表单禁用按回车键搜索
+        */
+        $("#searchForm").keypress(function (e) {
+            if (e.which == 13) {
+                return false;
+            }
+        });
+
         String.prototype.GetValue = function (para) { //将url ？ 后面的链接以&符号进行分割
             var reg = new RegExp("(^|&)" + para + "=([^&]*)(&|$)");
             var r = this.substr(this.indexOf("\?") + 1).match(reg);
             if (r != null) return unescape(r[2]); return null;
         }
         var str = location.search;  //获取当前页面url？后面的数值
-        str = decodeURI(str);
-        console.info("str = " + window.location.pathname + location.search)
-        var category = str.GetValue("category");
-        //var userID = Session["userId"].ToString().Trim();
-        //console.info( @ViewBag.ID);
-        // var userID = document.getElementById("userID").valueOf;
-        // console.info(userID);
-        var value = "发货";
-        var isSearch = 0;
+        str = decodeURI(str);   //对url进行解码
+        //console.info("str = " + window.location.pathname + location.search)
+        var category = str.GetValue("category");  //区分公司是否为接收方
 
-        value = str.GetValue("value");
+        var searchValue = "发货";  //文本框中的输入的内容
+        var isSearch = 0;  //用于判断是否在进行页面的搜索，0表示不是搜索状态， 1表示搜索状态
+
+        searchValue = str.GetValue("searchValue");
         isSearch = str.GetValue("isSearch");
-        if (isSearch != null)
-            console.log("99999 value = " + value + "isSearch = " + isSearch);
-        if (isSearch == null) isSearch = 0;
-        // string loginName = ParamUtil.getString(value, "login_name");
-        //value =decodeURI(value);
 
+        if (isSearch == null) isSearch = 0;
 
         $("#searchbutton").click(function () {
-            value = document.getElementById("search_input").value;
-            if (value.length != 0) {
-                //console.log("1111111" + value);
-                //location.reload();
-                //value = new String(value.getBytes("ISO-8859-1"), "UTF-8");
-                // value = encodeURI(value);
+            searchValue = document.getElementById("search_input").value;
+            if (searchValue.length != 0) {
                 isSearch = 1;
-                location.replace(encodeURI(window.location.pathname + '?category=' + category + '&value=' + value + '&isSearch=' + isSearch));
-                //console.log("3333333" + document.URL +"    " +isSearch);
+                //跳转到链接并对整个链接进行编码， searchValue 为文本框中输入的值
+                location.replace(encodeURI(window.location.pathname + '?category=' + category
+                    + '&searchValue=' + searchValue + '&isSearch=' + isSearch));
             } else {
                 isSearch = 0;
-                //console.log("222222" + value +"无输入值");
             }
         });
 
@@ -143,24 +141,22 @@
                   {
                       field: "consignee",
                       operator: "contains",
-                      value: value
+                      value: searchValue
                   },
                   {
                       field: "status",
                       operator: "contains",
-                      value: value
+                      value: searchValue
                   },
                   {
                       field: "TransportNumber",
                       operator: "contains",
-                      value: value
+                      value: searchValue
                   }
                 ]
             },
-            //sort: { field: "TransportNumber", dir: "desc" },
-            //pageSize: 1,
         });
-
+        //TransportSource2.transport.
         //TransportSource2.fetch(function () {
         //    var view = TransportSource2.view();
         //    var va = "";
@@ -176,7 +172,6 @@
 
         var TransportSource;
         if (isSearch == 1) {
-            //console( (TransportSource2 == null) + "   465464654646456");
             TransportSource = TransportSource2;
         } else {
             TransportSource = TransportSource1;
