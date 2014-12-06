@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -114,7 +116,6 @@ namespace MobileWebSite.BLL.OrderOperation.BLL
                             var templist = new List<GetDatabaseNum>();
                             for (int i = 0; i < orderlist.Count; i++)
                             {
-
                                 GetDatabaseNum getdata = new GetDatabaseNum();
                                 getdata.category = 1;
                                 getdata.orderID = orderlist.ElementAt(i).Order_ID;
@@ -135,7 +136,6 @@ namespace MobileWebSite.BLL.OrderOperation.BLL
                         }
                     case 1:
                         {
-
                             var templist = new List<GetDatabaseNum>();
 
                             for (int i = 0; i < orderlist.Count; i++)
@@ -674,7 +674,93 @@ namespace MobileWebSite.BLL.OrderOperation.BLL
             }
             return templist;
         }
+        public List<GetDatabaseNum> GetOrderBySearch(int enterpriseid, int option, int category, string keywords)
+        {
+            var templist = GetOrderLists(enterpriseid, category, 7);
+            var temp_GetList = new List<GetDatabaseNum>();
+            foreach (var temp in templist)
+            {
+                if ((temp.orderNum).ToString().Contains(keywords) || (temp.orderSupplier).ToString().Contains(keywords))
+                {
+                    var temp_new = new GetDatabaseNum();
+                    temp_new = temp;
+                    temp_GetList.Add(temp_new);
+                }
+            }
+            return temp_GetList;
+        }
+        // var templist = new List<GetDatabaseNum>();
 
+        // SqlConnection conn = new SqlConnection("Data Source=10.30.40.246; Initial Catalog=CPCAppDatazlh;Persist Security Info=True;User ID=sa;Password=123456;");  //连接数据库
+        // conn.Open(); //打开数据库
+
+        //    if (category == 0)
+        //    {
+        //        SqlDataAdapter sda1 = new SqlDataAdapter("select * from Orders where Order_Code like '%" + keywords + "%'" + "or Order_Name  like '%"+keywords+"%'" +"and PublisherEnterprise_ID=" + enterpriseid, conn);
+
+        //        DataTable Data1 = new DataTable();  //声明一个DataTable变量叫Data 
+        //        sda1.Fill(Data1);  //填充这个Data 
+        //        GetDatabaseNum getdata;
+        //        for (int i = 0; i < Data1.Rows.Count; i++)
+        //        {
+        //            getdata = new GetDatabaseNum();
+        //            getdata.orderNum = Data1.Rows[i]["Order_Code"].ToString();
+        //            getdata.orderID = Convert.ToInt32(Data1.Rows[i]["Order_ID"]);
+
+        //            var statuslist = statusRep.LoadEntities((OrderStatus => OrderStatus.Order_ID == getdata.orderID)).ToList();
+        //            int statusnum = statuslist.Count - 1;
+        //            int orderStatContent = (int)statuslist[statusnum].OrderStatus_Content;
+        //            getdata.orderStatus = getStatus(orderStatContent);
+
+
+        //            getdata.category = 1;
+        //            getdata.partner = Convert.ToInt32(Data1.Rows[i]["ProviderEnterprise_ID"]);
+        //            var enterlist = enterRep.LoadEntities((Enterprises => Enterprises.Enterprise_ID == getdata.partner)).ToList();
+        //            getdata.orderSupplier = enterlist.ElementAt(0).Enterprise_Name;
+
+        //            if (orderStatContent == option || option == 7)
+        //            {
+        //                templist.Add(getdata);
+        //            }
+
+
+
+        //        }
+        //    }
+        //    else
+        //    {
+        //        SqlDataAdapter sda1 = new SqlDataAdapter("select * from Orders where Order_Code like '%" + keywords + "%'"+ "or Order_Name like '%"+keywords+"%'"+ "and ProviderEnterprise_ID=" + enterpriseid, conn);
+        //        DataTable Data1 = new DataTable();  //声明一个DataTable变量叫Data 
+        //        sda1.Fill(Data1);  //填充这个Data 
+        //        GetDatabaseNum getdata;
+        //        for (int i = 0; i < Data1.Rows.Count; i++)
+        //        {
+        //            getdata = new GetDatabaseNum();
+        //            getdata.orderNum = Data1.Rows[i]["Order_Code"].ToString();
+        //            getdata.orderID = Convert.ToInt32(Data1.Rows[i]["Order_ID"]);
+
+        //            var statuslist = statusRep.LoadEntities((OrderStatus => OrderStatus.Order_ID == getdata.orderID)).ToList();
+        //            int statusnum = statuslist.Count - 1;
+        //            int orderStatContent = (int)statuslist[statusnum].OrderStatus_Content;
+        //            getdata.orderStatus = getStatus(orderStatContent);
+
+
+        //            getdata.category = 1;
+        //            getdata.partner = Convert.ToInt32(Data1.Rows[i]["PublisherEnterprise_ID"]);
+        //            var enterlist = enterRep.LoadEntities((Enterprises => Enterprises.Enterprise_ID == getdata.partner)).ToList();
+        //            getdata.orderSupplier = enterlist.ElementAt(0).Enterprise_Name;
+
+
+        //            if(orderStatContent==option || option==7)
+        //            {
+        //                    templist.Add(getdata);
+        //            }
+
+        //        }
+        //    }
+        //conn.Close();
+        // return templist;
+        //  }
 
         //获取公司订单数量信息 
         // category 0代表订单发布方 1代表承接方
@@ -696,6 +782,7 @@ namespace MobileWebSite.BLL.OrderOperation.BLL
                         if (lastStatus == 6)
                         {
                             compelete++;
+
                         }
                         else
                         {
@@ -758,7 +845,16 @@ namespace MobileWebSite.BLL.OrderOperation.BLL
             {
                 return 0;
             }
+
+
+
+
+
+
         }
+
+
+
     }
 }
 
