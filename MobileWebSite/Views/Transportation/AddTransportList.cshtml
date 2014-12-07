@@ -23,7 +23,6 @@
     <link href="~/Kendo/styles/kendo.dataviz.min.css" rel="stylesheet" />
     <link href="~/Kendo/styles/kendo.dataviz.default.min.css" rel="stylesheet" />
     <link href="~/Kendo/styles/kendo.mobile.all.min.css" rel="stylesheet" />
-
 </head>
 <body>
     <div id="addTransportList" data-layout="mobile-tabstrip">
@@ -64,13 +63,13 @@
                             <input id="distributionState" class="input long" type="text" name="distributionState" placeholder="物流状态" value="0" />
                         </div>
                         @*<div class="label">
-                            <h4>物流生成时间：</h4>
-                            <input id="createdTime" class="input long" type="text" name="createdTime" placeholder="物流生成时间" />
-                        </div>
-                        <div class="label">
-                            <h4>物流发出时间：</h4>
-                            <input id="sendTime" class="input long" type="text" name="sendTime" placeholder="物流发出时间" />
-                        </div>*@
+                                <h4>物流生成时间：</h4>
+                                <input id="createdTime" class="input long" type="text" name="createdTime" placeholder="物流生成时间" />
+                            </div>
+                            <div class="label">
+                                <h4>物流发出时间：</h4>
+                                <input id="sendTime" class="input long" type="text" name="sendTime" placeholder="物流发出时间" />
+                            </div>*@
                         <div class="submitAndReset">
                             <div id="infoSubmit" class="more-btn more-btn-no-pd">
                                 <a id="submitButton" data-role="button" href="javascript:;" @*onclick="submitform()"*@>提交</a>
@@ -85,22 +84,13 @@
         </div>
         <script>
             $(document).ready(function () {
-                //传递公司号码
-                //向后台传递当前公司的id
-                //var ProviderEnterpriseID = 10001; //当前登录公司的id，根据当前id来显示未配送的订单
                 var getOrderIDByProviEnterp = new kendo.data.DataSource({
                     transport: {
                         read: {
-                            //type: "POST",
                             url: "/Transportation/GetOrderID",
-                            //data: {
-                                //ProviderEnterpriseID: ProviderEnterpriseID
-                           // },
-                           // dataType: "json"
                         }
                     },
                 });
-                //console.info(getOrderIDByProviEnterp);
                 //从后台获取当前商户未完成配送的订单号的下拉列表
                 // create DropDownList from input HTML element
                 $("#orderID").kendoDropDownList({
@@ -117,13 +107,6 @@
                     placeholder: "请输入收货公司。", //当提示为空时会显示占位符，默认情况下无设置。
                     suggest: true, //如果设置为true，组件会自动使用第一个建议作为它的值。
                     dataSource: getOrderIDByProviEnterp,
-                    //dataSource: {
-                    //    type: "json",
-                    //    serverFiltering: true,
-                    //    transport: {
-                    //        read: "/Transportation/GetOrderID"
-                    //    }
-                    //}
                 });
 
                 ///*物流创建时间*/
@@ -162,7 +145,6 @@
                 /*表单数据提交*/
                 $("#submitButton").click(
                     function submitform() {
-
                         var distributionName = $.trim($("#distributionName").val());
                         var consignee = $.trim($("#consignee").val());
                         var distributionAddress = $.trim($("#distributionAddress").val());
@@ -203,7 +185,7 @@
                         }
                         if (sendTime == "") {
                             document.getElementById("sendTime").placeeholder = "请选择发货时间";
-                           // quickTips("sendTime", "请选择发货时间");
+                            // quickTips("sendTime", "请选择发货时间");
                             return;
                         }
 
@@ -218,17 +200,11 @@
                                 alert("Connection error");
                             },
                             success: function (msg) {
-                                //console.info(msg);
-                                //$('#chat').getKendoAttribution("data-source", "msg");
-                                //  $('#chat').attr("data-source", "msg");
-                                // $('#chat').data("TransportSource2",msg);
                                 window.location.href = '/Transportation/showAddSuccess?msg=' + msg;
-                                //alert(msg);
                             }
                         });
                     });
             });
-
         </script>
 
         <style scoped>
@@ -243,7 +219,7 @@
                 padding: 0 0px;
                 overflow: hidden;
                 position: relative;
-                 background-color:#efeff4;
+                background-color: #efeff4;
             }
 
             .form-wrap .input {

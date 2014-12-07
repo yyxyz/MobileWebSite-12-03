@@ -26,12 +26,11 @@
     <link href="~/Content/themes/div-item.css" rel="stylesheet" />
 </head>
 <body>
-
     <div data-role="view" data-title="Inbox" id="actionsheet-view" data-init="mobileListViewLocalFiltering">
 
         @* <ul id="filterable-listview"></ul>*@
         <div id="myheader" style="margin-top:2px">
-            <input id="status" style="width:35%;height:25px;" placeholder="Select status..." />
+            <input id="status" style="width:35%;height:25px;" value = "" placeholder="Select status..." />
             <form id="searchForm" action="" method="post">
                 <div style="list-style-type:none">
                     <div id="searchout">
@@ -52,30 +51,122 @@
         </div>
     </div>
 
-
     <script type="script/x-kendo-template" id="inboxItem">
-
         <div class="item">
             <div class="item-inside">
               <p1>订单号：#: orderNum #</p1>
               <a class="reply" data-role="button"  onclick=OrderContent("#:orderID#")
                   >订单详情</a>
+            </div>
 
+            #if(category==0)
+            {#
+                <h4>发布方：#: orderSupplier#</h4>
+            #}else
+            {#
+                <h4>承接方：#: orderSupplier#</h4>
+            #}#
+            <h4>订单状态：#: orderStatus#</h4>
+         </div>
+    </script>
 
-              </div>
+    <script>
+        String.prototype.GetValue = function (para) { //将url ？ 后面的链接以&符号进行分割
+            var reg = new RegExp("(^|&)" + para + "=([^&]*)(&|$)");
+            var r = this.substr(this.indexOf("\?") + 1).match(reg);
+            if (r != null) return unescape(r[2]); return null;
+        }
+        var str = location.search;  //获取当前页面url？后面的数值
+        str = decodeURI(str);   //对url进行解码
+        var category = str.GetValue("category");  //区分公司是否为接收方
+        var select = str.GetValue("select");
+        var orderid = str.GetValue("option");
+        if (select == null) select = 7;
+        // var category = location.search.substr(1).split('&')[0].split('=')[1];
+        //var urlbase = "/OrderDemo/GetOrderList";
+       // console.info("select111 = "+select + " orderid =  "+orderid);
 
-              #if(category==0)
-              {#
-                  <h4>发布方：#: orderSupplier#</h4>
-              #}else
-              {#
-                  <h4>承接方：#: orderSupplier#</h4>
-               #}#
+        function OrderContent(orderid) {
+            // alert(orderid);
+            //var category = location.search.substr(1).split('&')[0].split('=')[1];
+            var urlbase = "/OrderDemo/OrderDetails?option=";
+            urlbase += orderid;
+            urlbase += "&category=";
+            urlbase += category;
+            //alert("test");
+            window.location.href = urlbase;
+        }
+        //var defaultSelect = 0;     
+        var data = [
+                { text: "合同未签订", value: 0 },
+                { text: "合同已签订", value: 1 },
+                { text: "订单正在生产", value: 2 },
+                { text: "订单生产完成", value: 3 },
+                { text: "配送完成", value: 4 },
+                { text: "客户全部签收", value: 5 },
+                { text: "客户已评论", value: 6 },
+                { text: "全部订单", value: 7 }
+        ];
 
-              <h4>订单状态：#: orderStatus#</h4>
+        $("#status").kendoComboBox({
+            dataTextField: "text",
+            dataValueField: "value",
+            dataSource: data,         
+            index: select,         
+            filter: "contains",
+            suggest: true,
+            select: onSelect,
+        });
 
+        //$("#status").data("kendoComboBox");
+        document.getElementById("status").value = data[select].text;
+        console.info("订单状态 = " + document.getElementById("status").value + " select =  " + select + "  category = " + category + " orderid =  " + orderid);
+        var mydataSource = new kendo.data.DataSource({
+            transport: {
+                read: {
+                    type: "POST",
+                    url: "/OrderDemo/GetOrderList",
+                    data:
+                        {
+                            option: select,
+                            category: category,
+                            content: $('#search_input').val()
+                        },
+                    dataType: "json"
+                }
+            },
+        });
 
-              </div>
+        //把select的值传到后台
+        function onSelect(e) {
+            //select = e.item.index();
+            var select = this.dataItem(e.item.index());
+            console.info("select = " + select.value + "  ");
+            //defaultSelect = select;
+            location.replace(encodeURI(window.location.pathname + '?option=' + orderid + '&category=' + category
+                  + '&select=' + select.value ));
+            //location.reload();
+            //mydataSource = new kendo.data.DataSource({
+            //    transport: {
+            //        read: {
+            //            type: "POST",
+            //            url: urlbase,
+            //            data:
+            //                {
+            //                    option: select.value(),
+            //                    category: category
+            //                },
+            //            dataType: "json"
+            //        }
+            //    },
+            //});
+        }
+        function onsearch() {
+           location.reload();
+        }
+    </script>
+    <script>
+        var app = new kendo.mobile.Application(document.body);
     </script>
 
     <style scoped>
@@ -90,8 +181,6 @@
 
         #actionsheet-view .km-listview {
         }
-
-
 
         #actionResult {
             padding: 10px;
@@ -120,92 +209,6 @@
             text-shadow: 0 -1px rgba(0,0,0,.5);
         }
     </style>
-
-    <script>
-        function OrderContent(orderid) {
-            // alert(orderid);
-            var category = location.search.substr(1).split('&')[0].split('=')[1];
-            var urlbase = "/OrderDemo/OrderDetails?option=";
-            urlbase += orderid;
-            urlbase += "&category=";
-            urlbase += category;
-            //alert("test");
-            window.location.href = urlbase;
-
-        }
-    </script>
-    <script>
-
-        $("#status").kendoComboBox({
-            dataTextField: "text",
-            dataValueField: "value",
-            dataSource: [
-                { text: "合同未签订", value: 0 },
-                { text: "合同已签订", value: 1 },
-                { text: "订单正在生产", value: 2 },
-                { text: "订单生产完成", value: 3 },
-                { text: "配送完成", value: 4 },
-                { text: "客户全部签收", value: 5 },
-                { text: "客户已评论", value: 6 },
-                { text: "全部订单", value: 7 }
-
-            ],
-            select: onSelect,
-            filter: "contains",
-            suggest: true,
-            index: 7
-        });
-        var select = $("#status").data("kendoComboBox");
-        var category = location.search.substr(1).split('&')[0].split('=')[1];
-        var urlbase = "/OrderDemo/GetOrderList";
-
-        //把select的值传到后台
-        function onSelect(e) {
-            select = e.item.index();
-            //mydataSource = new kendo.data.DataSource({
-            //    transport: {
-            //        read: {
-            //            type: "POST",
-            //            url: urlbase,
-            //            data:
-            //                {
-            //                    option: select.value(),
-            //                    category: category
-            //                },
-            //            dataType: "json"
-            //        }
-            //    },
-
-            //});
-            location.reload();
-        }
-        function onsearch() {
-
-            location.reload();
-
-
-        }
-
-        var mydataSource = new kendo.data.DataSource({
-            transport: {
-                read: {
-                    type: "POST",
-                    url: urlbase,
-                    data:
-                        {
-                            option: select.value(),
-                            category: category,
-                            content: $('#search_input').val()
-                        },
-                    dataType: "json"
-                }
-            },
-
-        });
-
-
-        var app = new kendo.mobile.Application(document.body);
-    </script>
 </body>
 </html>
 

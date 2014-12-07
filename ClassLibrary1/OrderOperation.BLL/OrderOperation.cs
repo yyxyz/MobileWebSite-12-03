@@ -45,6 +45,12 @@ namespace MobileWebSite.BLL.OrderOperation.BLL
     }
     public class OrderOperation : IOrderOperation
     {
+        private OrderRepository orderRep = new OrderRepository();
+        private EnterpriseRepository enterRep = new EnterpriseRepository();
+        private OrderStatusRepository statusRep = new OrderStatusRepository();
+        private DistributionRepository disRep = new DistributionRepository();
+        private ChatRecordRepository chatRep = new ChatRecordRepository();
+
         public string getStatus(int option)
         {
             switch (option)
@@ -91,449 +97,59 @@ namespace MobileWebSite.BLL.OrderOperation.BLL
             }
         }
 
-        private OrderRepository orderRep = new OrderRepository();
-        private EnterpriseRepository enterRep = new EnterpriseRepository();
-        private OrderStatusRepository statusRep = new OrderStatusRepository();
-        private DistributionRepository disRep = new DistributionRepository();
-        private ChatRecordRepository chatRep = new ChatRecordRepository();
-        // private GetDatabaseNum getdata = new GetDatabaseNum();
-
-
         //根据combox选项获取相应公司的各个状态的订单，option表示combox选取的值
         public List<GetDatabaseNum> GetOrderLists(int companyId, int category, int option)
         {
-            // var orderlist = orderRep.LoadEntities((Order => Order.ProviderEnterprise_ID == companyId)).ToList();
-            //   var enterlist = enterRep.LoadEntities((Enterprises => Enterprises.Enterprise_ID == companyId)).ToList();
             //0代表发布方，1代表承接方
+            List<Order> orderlist;    
+            var templist = new List<GetDatabaseNum>();  //满足条件的订单
+            var tempAllList = new List<GetDatabaseNum>();  //返回所有订单，设置option=7
+
             if (category == 0)
             {
-                var orderlist = orderRep.LoadEntities((Order => Order.PublisherEnterprise_ID == companyId)).ToList();
-
-                switch (option)
-                {
-                    case 0:
-                        {
-                            var templist = new List<GetDatabaseNum>();
-                            for (int i = 0; i < orderlist.Count; i++)
-                            {
-                                GetDatabaseNum getdata = new GetDatabaseNum();
-                                getdata.category = 1;
-                                getdata.orderID = orderlist.ElementAt(i).Order_ID;
-                                getdata.partner = orderlist.ElementAt(i).ProviderEnterprise_ID;
-                                var statuslist = statusRep.LoadEntities((OrderStatus => OrderStatus.Order_ID == getdata.orderID)).ToList();
-                                int statusnum = statuslist.Count - 1;
-                                getdata.orderNum = orderlist.ElementAt(i).Order_Code;
-                                int orderStatContent = (int)statuslist[statusnum].OrderStatus_Content;
-                                getdata.orderStatus = getStatus(orderStatContent);
-                                var enterlist = enterRep.LoadEntities((Enterprises => Enterprises.Enterprise_ID == getdata.partner)).ToList();
-                                getdata.orderSupplier = enterlist.ElementAt(0).Enterprise_Name;
-                                if (orderStatContent == option)
-                                {
-                                    templist.Add(getdata);
-                                }
-                            }
-                            return templist;
-                        }
-                    case 1:
-                        {
-                            var templist = new List<GetDatabaseNum>();
-
-                            for (int i = 0; i < orderlist.Count; i++)
-                            {
-
-                                GetDatabaseNum getdata = new GetDatabaseNum();
-                                getdata.orderID = orderlist.ElementAt(i).Order_ID;
-                                getdata.partner = orderlist.ElementAt(i).ProviderEnterprise_ID;
-                                var enterlist = enterRep.LoadEntities((Enterprises => Enterprises.Enterprise_ID == getdata.partner)).ToList();
-                                getdata.category = 1;
-                                var statuslist = statusRep.LoadEntities((OrderStatus => OrderStatus.Order_ID == getdata.orderID)).ToList();
-                                int statusnum = statuslist.Count - 1;
-                                getdata.orderNum = orderlist.ElementAt(i).Order_Code;
-                                int orderStatContent = (int)statuslist[statusnum].OrderStatus_Content;
-                                getdata.orderStatus = getStatus((int)statuslist[statusnum].OrderStatus_Content);
-
-                                getdata.orderSupplier = enterlist.ElementAt(0).Enterprise_Name;
-                                if (orderStatContent == option)
-                                {
-                                    templist.Add(getdata);
-                                }
-                            }
-                            return templist;
-                        }
-                    case 6:
-                        {
-                            var templist = new List<GetDatabaseNum>();
-
-                            for (int i = 0; i < orderlist.Count; i++)
-                            {
-
-                                GetDatabaseNum getdata = new GetDatabaseNum();
-                                getdata.orderID = orderlist.ElementAt(i).Order_ID;
-                                getdata.partner = orderlist.ElementAt(i).ProviderEnterprise_ID;
-                                var enterlist = enterRep.LoadEntities((Enterprises => Enterprises.Enterprise_ID == getdata.partner)).ToList();
-                                getdata.category = 1;
-                                var statuslist = statusRep.LoadEntities((OrderStatus => OrderStatus.Order_ID == getdata.orderID)).ToList();
-                                int statusnum = statuslist.Count - 1;
-                                getdata.orderNum = orderlist.ElementAt(i).Order_Code;
-                                int orderStatContent = (int)statuslist[statusnum].OrderStatus_Content;
-                                getdata.orderStatus = getStatus((int)statuslist[statusnum].OrderStatus_Content);
-
-                                getdata.orderSupplier = enterlist.ElementAt(0).Enterprise_Name;
-                                if (orderStatContent == option)
-                                {
-                                    templist.Add(getdata);
-                                }
-                            }
-                            return templist;
-                        }
-                    case 3:
-                        {
-
-                            var templist = new List<GetDatabaseNum>();
-
-                            for (int i = 0; i < orderlist.Count; i++)
-                            {
-
-                                GetDatabaseNum getdata = new GetDatabaseNum();
-                                getdata.orderID = orderlist.ElementAt(i).Order_ID;
-                                getdata.partner = orderlist.ElementAt(i).ProviderEnterprise_ID;
-                                var enterlist = enterRep.LoadEntities((Enterprises => Enterprises.Enterprise_ID == getdata.partner)).ToList();
-                                getdata.category = 1;
-                                var statuslist = statusRep.LoadEntities((OrderStatus => OrderStatus.Order_ID == getdata.orderID)).ToList();
-                                int statusnum = statuslist.Count - 1;
-                                getdata.orderNum = orderlist.ElementAt(i).Order_Code;
-                                int orderStatContent = (int)statuslist[statusnum].OrderStatus_Content;
-                                getdata.orderStatus = getStatus((int)statuslist[statusnum].OrderStatus_Content);
-
-                                getdata.orderSupplier = enterlist.ElementAt(0).Enterprise_Name;
-                                if (orderStatContent == option)
-                                {
-                                    templist.Add(getdata);
-                                }
-                            }
-                            return templist;
-                        }
-                    case 2:
-                        {
-                            var templist = new List<GetDatabaseNum>();
-
-                            for (int i = 0; i < orderlist.Count; i++)
-                            {
-
-                                GetDatabaseNum getdata = new GetDatabaseNum();
-                                getdata.orderID = orderlist.ElementAt(i).Order_ID;
-                                getdata.partner = orderlist.ElementAt(i).ProviderEnterprise_ID;
-                                var enterlist = enterRep.LoadEntities((Enterprises => Enterprises.Enterprise_ID == getdata.partner)).ToList();
-                                getdata.category = 1;
-                                var statuslist = statusRep.LoadEntities((OrderStatus => OrderStatus.Order_ID == getdata.orderID)).ToList();
-                                int statusnum = statuslist.Count - 1;
-                                getdata.orderNum = orderlist.ElementAt(i).Order_Code;
-                                int orderStatContent = (int)statuslist[statusnum].OrderStatus_Content;
-                                getdata.orderStatus = getStatus((int)statuslist[statusnum].OrderStatus_Content);
-
-                                getdata.orderSupplier = enterlist.ElementAt(0).Enterprise_Name;
-                                if (orderStatContent == option)
-                                {
-                                    templist.Add(getdata);
-                                }
-                            }
-                            return templist;
-                        }
-                    case 4:
-                        {
-                            var templist = new List<GetDatabaseNum>();
-
-                            for (int i = 0; i < orderlist.Count; i++)
-                            {
-
-                                GetDatabaseNum getdata = new GetDatabaseNum();
-                                getdata.orderID = orderlist.ElementAt(i).Order_ID;
-                                getdata.partner = orderlist.ElementAt(i).ProviderEnterprise_ID;
-                                var enterlist = enterRep.LoadEntities((Enterprises => Enterprises.Enterprise_ID == getdata.partner)).ToList();
-                                getdata.category = 1;
-                                var statuslist = statusRep.LoadEntities((OrderStatus => OrderStatus.Order_ID == getdata.orderID)).ToList();
-                                int statusnum = statuslist.Count - 1;
-                                getdata.orderNum = orderlist.ElementAt(i).Order_Code;
-                                int orderStatContent = (int)statuslist[statusnum].OrderStatus_Content;
-                                getdata.orderStatus = getStatus((int)statuslist[statusnum].OrderStatus_Content);
-
-                                getdata.orderSupplier = enterlist.ElementAt(0).Enterprise_Name;
-                                if (orderStatContent == option)
-                                {
-                                    templist.Add(getdata);
-                                }
-                            }
-                            return templist;
-                        }
-                    case 5:
-                        {
-
-                            var templist = new List<GetDatabaseNum>();
-
-                            for (int i = 0; i < orderlist.Count; i++)
-                            {
-
-                                GetDatabaseNum getdata = new GetDatabaseNum();
-                                getdata.orderID = orderlist.ElementAt(i).Order_ID;
-                                getdata.partner = orderlist.ElementAt(i).ProviderEnterprise_ID;
-                                var enterlist = enterRep.LoadEntities((Enterprises => Enterprises.Enterprise_ID == getdata.partner)).ToList();
-                                getdata.category = 1;
-                                var statuslist = statusRep.LoadEntities((OrderStatus => OrderStatus.Order_ID == getdata.orderID)).ToList();
-                                int statusnum = statuslist.Count - 1;
-                                getdata.orderNum = orderlist.ElementAt(i).Order_Code;
-                                int orderStatContent = (int)statuslist[statusnum].OrderStatus_Content;
-                                getdata.orderStatus = getStatus((int)statuslist[statusnum].OrderStatus_Content);
-
-                                getdata.orderSupplier = enterlist.ElementAt(0).Enterprise_Name;
-                                if (orderStatContent == option)
-                                {
-                                    templist.Add(getdata);
-                                }
-                            }
-                            return templist;
-                        }
-                    default:
-                        {
-                            var templist = new List<GetDatabaseNum>();
-
-                            for (int i = 0; i < orderlist.Count; i++)
-                            {
-
-                                GetDatabaseNum getdata = new GetDatabaseNum();
-                                getdata.orderID = orderlist.ElementAt(i).Order_ID;
-                                getdata.partner = orderlist.ElementAt(i).ProviderEnterprise_ID;
-                                var enterlist = enterRep.LoadEntities((Enterprises => Enterprises.Enterprise_ID == getdata.partner)).ToList();
-                                //因为登陆的是发布方显示的是承接方
-                                getdata.category = 1;
-                                var statuslist = statusRep.LoadEntities((OrderStatus => OrderStatus.Order_ID == getdata.orderID)).ToList();
-                                int statusnum = statuslist.Count - 1;
-                                getdata.orderNum = orderlist.ElementAt(i).Order_Code;
-                                getdata.orderStatus = getStatus((int)statuslist[statusnum].OrderStatus_Content);
-
-                                getdata.orderSupplier = enterlist.ElementAt(0).Enterprise_Name;
-                                templist.Add(getdata);
-                            }
-                            return templist;
-                        }
-                }
+                orderlist = orderRep.LoadEntities((Order => Order.PublisherEnterprise_ID == companyId)).ToList();
             }
             else
             {
-                //因为登陆的是承接方显示的是发布方
-                var orderlist = orderRep.LoadEntities((Order => Order.ProviderEnterprise_ID == companyId)).ToList();
-                switch (option)
-                {
-                    case 0:
-                        {
-                            var templist = new List<GetDatabaseNum>();
-                            for (int i = 0; i < orderlist.Count; i++)
-                            {
-
-                                GetDatabaseNum getdata = new GetDatabaseNum();
-                                getdata.partner = orderlist.ElementAt(i).PublisherEnterprise_ID;
-                                var enterlist = enterRep.LoadEntities((Enterprises => Enterprises.Enterprise_ID == getdata.partner)).ToList();
-                                getdata.category = 0;
-                                getdata.orderID = orderlist.ElementAt(i).Order_ID;
-                                var statuslist = statusRep.LoadEntities((OrderStatus => OrderStatus.Order_ID == getdata.orderID)).ToList();
-                                int statusnum = statuslist.Count - 1;
-                                getdata.orderNum = orderlist.ElementAt(i).Order_Code;
-                                int orderStatContent = (int)statuslist[statusnum].OrderStatus_Content;
-                                getdata.orderStatus = getStatus(orderStatContent);
-
-                                getdata.orderSupplier = enterlist.ElementAt(0).Enterprise_Name;
-                                if (orderStatContent == option)
-                                {
-                                    templist.Add(getdata);
-                                }
-                            }
-                            return templist;
-                        }
-                    case 1:
-                        {
-
-                            var templist = new List<GetDatabaseNum>();
-
-                            for (int i = 0; i < orderlist.Count; i++)
-                            {
-
-                                GetDatabaseNum getdata = new GetDatabaseNum();
-                                getdata.partner = orderlist.ElementAt(i).PublisherEnterprise_ID; ;
-                                var enterlist = enterRep.LoadEntities((Enterprises => Enterprises.Enterprise_ID == getdata.partner)).ToList();
-                                getdata.orderID = orderlist.ElementAt(i).Order_ID;
-                                getdata.category = 0;
-                                var statuslist = statusRep.LoadEntities((OrderStatus => OrderStatus.Order_ID == getdata.orderID)).ToList();
-                                int statusnum = statuslist.Count - 1;
-                                getdata.orderNum = orderlist.ElementAt(i).Order_Code;
-                                int orderStatContent = (int)statuslist[statusnum].OrderStatus_Content;
-                                getdata.orderStatus = getStatus((int)statuslist[statusnum].OrderStatus_Content);
-
-                                getdata.orderSupplier = enterlist.ElementAt(0).Enterprise_Name;
-                                if (orderStatContent == option)
-                                {
-                                    templist.Add(getdata);
-                                }
-                            }
-                            return templist;
-                        }
-                    case 6:
-                        {
-                            var templist = new List<GetDatabaseNum>();
-
-                            for (int i = 0; i < orderlist.Count; i++)
-                            {
-
-                                GetDatabaseNum getdata = new GetDatabaseNum();
-                                getdata.partner = orderlist.ElementAt(i).PublisherEnterprise_ID; ;
-                                var enterlist = enterRep.LoadEntities((Enterprises => Enterprises.Enterprise_ID == getdata.partner)).ToList();
-                                getdata.orderID = orderlist.ElementAt(i).Order_ID;
-                                getdata.category = 0;
-                                var statuslist = statusRep.LoadEntities((OrderStatus => OrderStatus.Order_ID == getdata.orderID)).ToList();
-                                int statusnum = statuslist.Count - 1;
-                                getdata.orderNum = orderlist.ElementAt(i).Order_Code;
-                                int orderStatContent = (int)statuslist[statusnum].OrderStatus_Content;
-                                getdata.orderStatus = getStatus((int)statuslist[statusnum].OrderStatus_Content);
-
-                                getdata.orderSupplier = enterlist.ElementAt(0).Enterprise_Name;
-                                if (orderStatContent == option)
-                                {
-                                    templist.Add(getdata);
-                                }
-                            }
-                            return templist;
-                        }
-                    case 3:
-                        {
-
-                            var templist = new List<GetDatabaseNum>();
-
-                            for (int i = 0; i < orderlist.Count; i++)
-                            {
-
-                                GetDatabaseNum getdata = new GetDatabaseNum();
-                                getdata.partner = orderlist.ElementAt(i).PublisherEnterprise_ID; ;
-                                var enterlist = enterRep.LoadEntities((Enterprises => Enterprises.Enterprise_ID == getdata.partner)).ToList();
-                                getdata.orderID = orderlist.ElementAt(i).Order_ID;
-                                getdata.category = 0;
-                                var statuslist = statusRep.LoadEntities((OrderStatus => OrderStatus.Order_ID == getdata.orderID)).ToList();
-                                int statusnum = statuslist.Count - 1;
-                                getdata.orderNum = orderlist.ElementAt(i).Order_Code;
-                                int orderStatContent = (int)statuslist[statusnum].OrderStatus_Content;
-                                getdata.orderStatus = getStatus((int)statuslist[statusnum].OrderStatus_Content);
-
-                                getdata.orderSupplier = enterlist.ElementAt(0).Enterprise_Name;
-                                if (orderStatContent == option)
-                                {
-                                    templist.Add(getdata);
-                                }
-                            }
-                            return templist;
-                        }
-                    case 2:
-                        {
-                            var templist = new List<GetDatabaseNum>();
-
-                            for (int i = 0; i < orderlist.Count; i++)
-                            {
-
-                                GetDatabaseNum getdata = new GetDatabaseNum();
-                                getdata.orderID = orderlist.ElementAt(i).Order_ID;
-                                getdata.partner = orderlist.ElementAt(i).PublisherEnterprise_ID; ;
-                                var enterlist = enterRep.LoadEntities((Enterprises => Enterprises.Enterprise_ID == getdata.partner)).ToList();
-                                getdata.category = 0;
-                                var statuslist = statusRep.LoadEntities((OrderStatus => OrderStatus.Order_ID == getdata.orderID)).ToList();
-                                int statusnum = statuslist.Count - 1;
-                                getdata.orderNum = orderlist.ElementAt(i).Order_Code;
-                                int orderStatContent = (int)statuslist[statusnum].OrderStatus_Content;
-                                getdata.orderStatus = getStatus((int)statuslist[statusnum].OrderStatus_Content);
-
-                                getdata.orderSupplier = enterlist.ElementAt(0).Enterprise_Name;
-                                if (orderStatContent == option)
-                                {
-                                    templist.Add(getdata);
-                                }
-                            }
-                            return templist;
-                        }
-                    case 4:
-                        {
-                            var templist = new List<GetDatabaseNum>();
-
-                            for (int i = 0; i < orderlist.Count; i++)
-                            {
-
-                                GetDatabaseNum getdata = new GetDatabaseNum();
-                                getdata.orderID = orderlist.ElementAt(i).Order_ID;
-                                getdata.partner = orderlist.ElementAt(i).PublisherEnterprise_ID; ;
-                                var enterlist = enterRep.LoadEntities((Enterprises => Enterprises.Enterprise_ID == getdata.partner)).ToList();
-                                getdata.category = 0;
-                                var statuslist = statusRep.LoadEntities((OrderStatus => OrderStatus.Order_ID == getdata.orderID)).ToList();
-                                int statusnum = statuslist.Count - 1;
-                                getdata.orderNum = orderlist.ElementAt(i).Order_Code;
-                                int orderStatContent = (int)statuslist[statusnum].OrderStatus_Content;
-                                getdata.orderStatus = getStatus((int)statuslist[statusnum].OrderStatus_Content);
-
-                                getdata.orderSupplier = enterlist.ElementAt(0).Enterprise_Name;
-                                if (orderStatContent == option)
-                                {
-                                    templist.Add(getdata);
-                                }
-                            }
-                            return templist;
-                        }
-                    case 5:
-                        {
-
-                            var templist = new List<GetDatabaseNum>();
-
-                            for (int i = 0; i < orderlist.Count; i++)
-                            {
-
-                                GetDatabaseNum getdata = new GetDatabaseNum();
-                                getdata.orderID = orderlist.ElementAt(i).Order_ID;
-                                getdata.partner = orderlist.ElementAt(i).PublisherEnterprise_ID; ;
-                                var enterlist = enterRep.LoadEntities((Enterprises => Enterprises.Enterprise_ID == getdata.partner)).ToList();
-                                getdata.category = 0;
-                                var statuslist = statusRep.LoadEntities((OrderStatus => OrderStatus.Order_ID == getdata.orderID)).ToList();
-                                int statusnum = statuslist.Count - 1;
-                                getdata.orderNum = orderlist.ElementAt(i).Order_Code;
-                                int orderStatContent = (int)statuslist[statusnum].OrderStatus_Content;
-                                getdata.orderStatus = getStatus((int)statuslist[statusnum].OrderStatus_Content);
-
-                                getdata.orderSupplier = enterlist.ElementAt(0).Enterprise_Name;
-                                if (orderStatContent == option)
-                                {
-                                    templist.Add(getdata);
-                                }
-                            }
-                            return templist;
-                        }
-                    default:
-                        {
-                            var templist = new List<GetDatabaseNum>();
-
-                            for (int i = 0; i < orderlist.Count; i++)
-                            {
-
-                                GetDatabaseNum getdata = new GetDatabaseNum();
-                                getdata.orderID = orderlist.ElementAt(i).Order_ID;
-                                getdata.partner = orderlist.ElementAt(i).PublisherEnterprise_ID; ;
-                                var enterlist = enterRep.LoadEntities((Enterprises => Enterprises.Enterprise_ID == getdata.partner)).ToList();
-                                getdata.category = 0;
-                                var statuslist = statusRep.LoadEntities((OrderStatus => OrderStatus.Order_ID == getdata.orderID)).ToList();
-                                int statusnum = statuslist.Count - 1;
-                                getdata.orderNum = orderlist.ElementAt(i).Order_Code;
-                                getdata.orderStatus = getStatus((int)statuslist[statusnum].OrderStatus_Content);
-
-                                getdata.orderSupplier = enterlist.ElementAt(0).Enterprise_Name;
-                                templist.Add(getdata);
-                            }
-                            return templist;
-                        }
-                }
+                orderlist = orderRep.LoadEntities((Order => Order.ProviderEnterprise_ID == companyId)).ToList();
             }
-
+        
+            for (int i = 0; i < orderlist.Count; i++)
+            {
+                GetDatabaseNum getdata = new GetDatabaseNum();
+                getdata.orderID = orderlist.ElementAt(i).Order_ID;
+                if (category == 0)
+                {
+                    getdata.category = 1;
+                    getdata.partner = orderlist.ElementAt(i).ProviderEnterprise_ID;
+                }
+                else if (category == 1)
+                {
+                    getdata.category = 1;
+                    getdata.partner = orderlist.ElementAt(i).PublisherEnterprise_ID;
+                }
+                var statuslist = statusRep.LoadEntities((OrderStatus => OrderStatus.Order_ID == getdata.orderID)).ToList();
+                int statusnum = statuslist.Count - 1;
+                getdata.orderNum = orderlist.ElementAt(i).Order_Code;
+                getdata.orderStatus = getStatus((int)statuslist[statusnum].OrderStatus_Content);
+                var enterlist = enterRep.LoadEntities((Enterprises => Enterprises.Enterprise_ID == getdata.partner)).ToList();
+                getdata.orderSupplier = enterlist.ElementAt(0).Enterprise_Name;
+                int orderStatContent = (int)statuslist[statusnum].OrderStatus_Content;
+                if (orderStatContent == option)
+                {
+                    templist.Add(getdata);
+                }
+                tempAllList.Add(getdata);
+            }
+            if (option == 7)
+            {
+                return tempAllList;
+            }
+            else
+            {
+                return templist;
+            }
         }
-
 
         /// <summary>
         /// 获取订单的详细信息
@@ -543,7 +159,6 @@ namespace MobileWebSite.BLL.OrderOperation.BLL
         /// <returns></returns>
         public List<GetOrderDetails> GetOrderDetailByOrderId(int category, int orderId)
         {
-
             var orderlist = orderRep.LoadEntities((Orders => Orders.Order_ID == orderId)).ToList();
             var supplierid = 0;
             if (category == 0)
@@ -583,13 +198,7 @@ namespace MobileWebSite.BLL.OrderOperation.BLL
                 templist.Add(orderDetails);
                 return templist;
             }
-
         }
-        public List<Order> SearchOrderLists(string keywords)
-        {
-            return null;
-        }
-
 
         //获取订单的最近一项状态
         public OrderStatus.orderStatusType GetLatestStatus(int orderid)
@@ -628,7 +237,6 @@ namespace MobileWebSite.BLL.OrderOperation.BLL
             //orderStat.status = 0;
             //orderStat.statusContent = GetNextStatus(orderid);
             //templist.Add(orderStat);
-
             return templist;
         }
         public List<OrderSta> GetOrderStatus2(int orderid)
@@ -676,7 +284,7 @@ namespace MobileWebSite.BLL.OrderOperation.BLL
         }
         public List<GetDatabaseNum> GetOrderBySearch(int enterpriseid, int option, int category, string keywords)
         {
-            var templist = GetOrderLists(enterpriseid, category, 7);
+            var templist = GetOrderLists(enterpriseid, category, option);
             var temp_GetList = new List<GetDatabaseNum>();
             foreach (var temp in templist)
             {
@@ -688,79 +296,79 @@ namespace MobileWebSite.BLL.OrderOperation.BLL
                 }
             }
             return temp_GetList;
+
+            // var templist = new List<GetDatabaseNum>();
+
+            // SqlConnection conn = new SqlConnection("Data Source=10.30.40.246; Initial Catalog=CPCAppDatazlh;Persist Security Info=True;User ID=sa;Password=123456;");  //连接数据库
+            // conn.Open(); //打开数据库
+
+            //    if (category == 0)
+            //    {
+            //        SqlDataAdapter sda1 = new SqlDataAdapter("select * from Orders where Order_Code like '%" + keywords + "%'" + "or Order_Name  like '%"+keywords+"%'" +"and PublisherEnterprise_ID=" + enterpriseid, conn);
+
+            //        DataTable Data1 = new DataTable();  //声明一个DataTable变量叫Data 
+            //        sda1.Fill(Data1);  //填充这个Data 
+            //        GetDatabaseNum getdata;
+            //        for (int i = 0; i < Data1.Rows.Count; i++)
+            //        {
+            //            getdata = new GetDatabaseNum();
+            //            getdata.orderNum = Data1.Rows[i]["Order_Code"].ToString();
+            //            getdata.orderID = Convert.ToInt32(Data1.Rows[i]["Order_ID"]);
+
+            //            var statuslist = statusRep.LoadEntities((OrderStatus => OrderStatus.Order_ID == getdata.orderID)).ToList();
+            //            int statusnum = statuslist.Count - 1;
+            //            int orderStatContent = (int)statuslist[statusnum].OrderStatus_Content;
+            //            getdata.orderStatus = getStatus(orderStatContent);
+
+
+            //            getdata.category = 1;
+            //            getdata.partner = Convert.ToInt32(Data1.Rows[i]["ProviderEnterprise_ID"]);
+            //            var enterlist = enterRep.LoadEntities((Enterprises => Enterprises.Enterprise_ID == getdata.partner)).ToList();
+            //            getdata.orderSupplier = enterlist.ElementAt(0).Enterprise_Name;
+
+            //            if (orderStatContent == option || option == 7)
+            //            {
+            //                templist.Add(getdata);
+            //            }
+
+
+
+            //        }
+            //    }
+            //    else
+            //    {
+            //        SqlDataAdapter sda1 = new SqlDataAdapter("select * from Orders where Order_Code like '%" + keywords + "%'"+ "or Order_Name like '%"+keywords+"%'"+ "and ProviderEnterprise_ID=" + enterpriseid, conn);
+            //        DataTable Data1 = new DataTable();  //声明一个DataTable变量叫Data 
+            //        sda1.Fill(Data1);  //填充这个Data 
+            //        GetDatabaseNum getdata;
+            //        for (int i = 0; i < Data1.Rows.Count; i++)
+            //        {
+            //            getdata = new GetDatabaseNum();
+            //            getdata.orderNum = Data1.Rows[i]["Order_Code"].ToString();
+            //            getdata.orderID = Convert.ToInt32(Data1.Rows[i]["Order_ID"]);
+
+            //            var statuslist = statusRep.LoadEntities((OrderStatus => OrderStatus.Order_ID == getdata.orderID)).ToList();
+            //            int statusnum = statuslist.Count - 1;
+            //            int orderStatContent = (int)statuslist[statusnum].OrderStatus_Content;
+            //            getdata.orderStatus = getStatus(orderStatContent);
+
+
+            //            getdata.category = 1;
+            //            getdata.partner = Convert.ToInt32(Data1.Rows[i]["PublisherEnterprise_ID"]);
+            //            var enterlist = enterRep.LoadEntities((Enterprises => Enterprises.Enterprise_ID == getdata.partner)).ToList();
+            //            getdata.orderSupplier = enterlist.ElementAt(0).Enterprise_Name;
+
+
+            //            if(orderStatContent==option || option==7)
+            //            {
+            //                    templist.Add(getdata);
+            //            }
+
+            //        }
+            //    }
+            //conn.Close();
+            // return templist;
         }
-        // var templist = new List<GetDatabaseNum>();
-
-        // SqlConnection conn = new SqlConnection("Data Source=10.30.40.246; Initial Catalog=CPCAppDatazlh;Persist Security Info=True;User ID=sa;Password=123456;");  //连接数据库
-        // conn.Open(); //打开数据库
-
-        //    if (category == 0)
-        //    {
-        //        SqlDataAdapter sda1 = new SqlDataAdapter("select * from Orders where Order_Code like '%" + keywords + "%'" + "or Order_Name  like '%"+keywords+"%'" +"and PublisherEnterprise_ID=" + enterpriseid, conn);
-
-        //        DataTable Data1 = new DataTable();  //声明一个DataTable变量叫Data 
-        //        sda1.Fill(Data1);  //填充这个Data 
-        //        GetDatabaseNum getdata;
-        //        for (int i = 0; i < Data1.Rows.Count; i++)
-        //        {
-        //            getdata = new GetDatabaseNum();
-        //            getdata.orderNum = Data1.Rows[i]["Order_Code"].ToString();
-        //            getdata.orderID = Convert.ToInt32(Data1.Rows[i]["Order_ID"]);
-
-        //            var statuslist = statusRep.LoadEntities((OrderStatus => OrderStatus.Order_ID == getdata.orderID)).ToList();
-        //            int statusnum = statuslist.Count - 1;
-        //            int orderStatContent = (int)statuslist[statusnum].OrderStatus_Content;
-        //            getdata.orderStatus = getStatus(orderStatContent);
-
-
-        //            getdata.category = 1;
-        //            getdata.partner = Convert.ToInt32(Data1.Rows[i]["ProviderEnterprise_ID"]);
-        //            var enterlist = enterRep.LoadEntities((Enterprises => Enterprises.Enterprise_ID == getdata.partner)).ToList();
-        //            getdata.orderSupplier = enterlist.ElementAt(0).Enterprise_Name;
-
-        //            if (orderStatContent == option || option == 7)
-        //            {
-        //                templist.Add(getdata);
-        //            }
-
-
-
-        //        }
-        //    }
-        //    else
-        //    {
-        //        SqlDataAdapter sda1 = new SqlDataAdapter("select * from Orders where Order_Code like '%" + keywords + "%'"+ "or Order_Name like '%"+keywords+"%'"+ "and ProviderEnterprise_ID=" + enterpriseid, conn);
-        //        DataTable Data1 = new DataTable();  //声明一个DataTable变量叫Data 
-        //        sda1.Fill(Data1);  //填充这个Data 
-        //        GetDatabaseNum getdata;
-        //        for (int i = 0; i < Data1.Rows.Count; i++)
-        //        {
-        //            getdata = new GetDatabaseNum();
-        //            getdata.orderNum = Data1.Rows[i]["Order_Code"].ToString();
-        //            getdata.orderID = Convert.ToInt32(Data1.Rows[i]["Order_ID"]);
-
-        //            var statuslist = statusRep.LoadEntities((OrderStatus => OrderStatus.Order_ID == getdata.orderID)).ToList();
-        //            int statusnum = statuslist.Count - 1;
-        //            int orderStatContent = (int)statuslist[statusnum].OrderStatus_Content;
-        //            getdata.orderStatus = getStatus(orderStatContent);
-
-
-        //            getdata.category = 1;
-        //            getdata.partner = Convert.ToInt32(Data1.Rows[i]["PublisherEnterprise_ID"]);
-        //            var enterlist = enterRep.LoadEntities((Enterprises => Enterprises.Enterprise_ID == getdata.partner)).ToList();
-        //            getdata.orderSupplier = enterlist.ElementAt(0).Enterprise_Name;
-
-
-        //            if(orderStatContent==option || option==7)
-        //            {
-        //                    templist.Add(getdata);
-        //            }
-
-        //        }
-        //    }
-        //conn.Close();
-        // return templist;
-        //  }
 
         //获取公司订单数量信息 
         // category 0代表订单发布方 1代表承接方
@@ -802,7 +410,6 @@ namespace MobileWebSite.BLL.OrderOperation.BLL
                 {
                     return 0;
                 }
-
             }
             else if (category == 1)
             {
@@ -839,22 +446,12 @@ namespace MobileWebSite.BLL.OrderOperation.BLL
                 {
                     return 0;
                 }
-
             }
             else
             {
                 return 0;
             }
-
-
-
-
-
-
         }
-
-
-
     }
 }
 

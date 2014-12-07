@@ -42,7 +42,6 @@
             #}#
             <h4> 物流状态：#: status# </h4>
         </div>
-
     </script>
 
     <script>
@@ -52,9 +51,9 @@
             if (r != null) return unescape(r[2]); return null;
         }
         var str = location.search;  //获取当前页面url？后面的数值
-        var orderId = str.GetValue("option")
-        var category = str.GetValue("category");
-        console.info(orderId + " " + category);
+        var orderId = str.GetValue("option")   //获取订单号
+        var category = str.GetValue("category"); //获取商家类型，0代表发布方，1代表承接方
+        //console.info(orderId + " " + category);
 
         var orderListData = new kendo.data.DataSource({
             transport: {
@@ -73,50 +72,42 @@
         });
 
         function logisticsContent(distributionId) {
-            //alert("物流详情");
-            //window.location.replace("/OrderDemo.html"); //
-            //window.location = '/OrderDemo.html';
-            //window.location.href = '/OrderDemo.html';
-            //javascript: location.href = '/OrderDemo.html';
             var urlbase = "/Transportation/TransportDetails?option=";
             urlbase += distributionId;
-            //urlbase = urlbase + "&userID=" + 10001;
             urlbase += "&category=" + category;
-            location.replace(urlbase); //在新的标签页打开链接
+            location.replace(urlbase); //替换当前标签页
             console.info(urlbase);
-            //window.open("");
         }
     </script>
-        <style scoped>
-            .reply {
-                float: right;
-                margin-right: 10px;
-            }
-
-            .inboxList {
-                font-size: .8em;
-            }
-
-                .inboxList p,
-                .inboxList h2,
-                .inboxList h3 {
-                    margin: 5px 2px;
-                }
-
-                .inboxList p,
-                .inboxList h3 {
-                    color: #777;
-                }
-
-                    .inboxList h3.time {
-                        color: #369;
-                        float: left;
-                        margin-right: 10px;
-                    }
-        </style>
-
     <script>
         window.kendoMobileApplication = new kendo.mobile.Application(document.body);
     </script>
+    <style scoped>
+        .reply {
+            float: right;
+            margin-right: 10px;
+        }
+
+        .inboxList {
+            font-size: .8em;
+        }
+
+            .inboxList p,
+            .inboxList h2,
+            .inboxList h3 {
+                margin: 5px 2px;
+            }
+
+            .inboxList p,
+            .inboxList h3 {
+                color: #777;
+            }
+
+                .inboxList h3.time {
+                    color: #369;
+                    float: left;
+                    margin-right: 10px;
+                }
+    </style>
 </body>
 </html>

@@ -60,15 +60,15 @@ namespace MobileWebSite.Controllers
                     return image;
                 }
                 else
-                {  //D:\\MobileWebSite\\MobileWebSite\\Kendo\\123.png
-                    Image originalImage = System.Drawing.Image.FromFile("C:\\Users\\lly\\Desktop\\MobileWebSite\\MobileWebSite\\Kendo\\123.png");
+                {  //D:\\MobileWebSite\\MobileWebSite\\Kendo\\123.png F:\360\GitHub\MobileWebSite-12-03\MobileWebSite
+                    Image originalImage = System.Drawing.Image.FromFile("F:\\360\\GitHub\\MobileWebSite-12-03\\MobileWebSite\\Kendo\\123.png");
                     originalImage.Save(Response.OutputStream, System.Drawing.Imaging.ImageFormat.Jpeg);
                     return originalImage;
                 }
             }
             catch (System.Exception ex)
             {
-                Image originalImage = System.Drawing.Image.FromFile("C:\\Users\\lly\\Desktop\\MobileWebSite\\MobileWebSite\\Kendo\\123.png", true);
+                Image originalImage = System.Drawing.Image.FromFile("F:\\360\\GitHub\\MobileWebSite-12-03\\MobileWebSite\\Kendo\\123.png", true);
                 originalImage.Save(Response.OutputStream, System.Drawing.Imaging.ImageFormat.Jpeg);
                 return originalImage;
             }

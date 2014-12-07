@@ -65,7 +65,7 @@
     </script>
 
     <script>
-        /*用于对form表单禁用按回车键搜索
+        /*用于对form表单-搜索框表单-禁用按回车键搜索
         */
         $("#searchForm").keypress(function (e) {
             if (e.which == 13) {
@@ -80,16 +80,19 @@
         }
         var str = location.search;  //获取当前页面url？后面的数值
         str = decodeURI(str);   //对url进行解码
-        //console.info("str = " + window.location.pathname + location.search)
         var category = str.GetValue("category");  //区分公司是否为接收方
-
-        var searchValue = "发货";  //文本框中的输入的内容
+        var searchValue = "notsearch";  //文本框中的输入的内容
         var isSearch = 0;  //用于判断是否在进行页面的搜索，0表示不是搜索状态， 1表示搜索状态
+        searchValue = str.GetValue("searchValue");  //获取搜索的值
 
-        searchValue = str.GetValue("searchValue");
-        isSearch = str.GetValue("isSearch");
+        if (searchValue == null) {
+            searchValue = "notsearch";
+            //console.info("searchValue 2222= " + searchValue);
+        }
 
-        if (isSearch == null) isSearch = 0;
+        isSearch = str.GetValue("isSearch");  //是否在搜索
+
+        if (isSearch == null) isSearch = 0; //是否能从url中获得isSearch的值
 
         $("#searchbutton").click(function () {
             searchValue = document.getElementById("search_input").value;
@@ -100,10 +103,13 @@
                     + '&searchValue=' + searchValue + '&isSearch=' + isSearch));
             } else {
                 isSearch = 0;
+                searchValue = "notsearch";
+                location.replace(encodeURI(window.location.pathname + '?category=' + category
+                    + '&searchValue=' + searchValue + '&isSearch=' + isSearch));
             }
         });
 
-        var TransportSource1 = new kendo.data.DataSource({
+        var TransportSource = new kendo.data.DataSource({
             transport: {
                 read: {
                     type: "POST",
@@ -112,6 +118,7 @@
                                 {
                                     // enterpriseID: 10001,
                                     category: category,
+                                    searchValue: searchValue,
                                     //transportState: 0,
                                 },
                     dataType: "json"
@@ -119,109 +126,11 @@
             },
         });
 
-        var TransportSource2 = new kendo.data.DataSource({
-            transport: {
-                read: {
-                    type: "POST",
-                    url: "/Transportation/GetTransportList",
-                    data:
-                        {
-                            // enterpriseID: 10001,
-                            category: category,
-                            //transportState: 0,
-                        },
-                    dataType: "json"
-                }
-            },
-            //data: TransportSource,
-            filter: {
-                // leave data items which are "Food" or "Tea"
-                logic: "or",
-                filters: [
-                  {
-                      field: "consignee",
-                      operator: "contains",
-                      value: searchValue
-                  },
-                  {
-                      field: "status",
-                      operator: "contains",
-                      value: searchValue
-                  },
-                  {
-                      field: "TransportNumber",
-                      operator: "contains",
-                      value: searchValue
-                  }
-                ]
-            },
-        });
-        //TransportSource2.transport.
-        //TransportSource2.fetch(function () {
-        //    var view = TransportSource2.view();
-        //    var va = "";
-        //    for (var i = 0; i < view.length; i++) {
-        //        va = va + view[i].consignee + " " + view[i].status + " ";
-        //    }
-        //    console.log("asdfasdfa "+ view.length); // displays "2"
-        //    console.log(va); // displays "Tea"
-        //    //console.log(view[1].name); // displays "Ham"
-        //    //return view.length;
-        //    console.log(TransportSource2.total()); // displays "John Doe"
-        //});
-
-        var TransportSource;
-        if (isSearch == 1) {
-            TransportSource = TransportSource2;
-        } else {
-            TransportSource = TransportSource1;
-        }
-
-
-
-        //function onsearch() {
-        //    //var value = document.getElementById("search_input").valueOf;
-        //    console.log(value);
-        //}
-
-        //$("#listsource").kendoMobileListView({
-        //    dataSource: TransportSource,
-        //    template: $("#transportItem").text(),
-        //    filterable: {
-        //        //logic: "or",
-        //        //filters: [
-        //        //  { field: "consignee", operator: "contains"},
-        //        //  { field: "status", operator: "contains" }
-        //        //]
-        //        field: ("consignee" || "consignor" || "status"),
-        //        operator: "contains"
-        //    },
-        //    virtualViewSize: 100,
-        //    //endlessScroll: true
-        //});
-
-        //$("#listsource").kendoMobileListView({
-        //    dataSource: mydataSource,
-        //    template: $("#inboxItem").text(),
-        //    filterable: {
-        //        field: "orderSupplier",
-        //        operator: "startswith"
-        //    },
-        //    //endlessScroll: true
-        //});
-
         function logisticsContent(distributionId1) {
-            //alert("物流详情");
-            //window.location.replace("/OrderDemo.html"); //
-            //window.location = '/OrderDemo.html';
-            //window.location.href = '/OrderDemo.html';
-            //javascript: location.href = '/OrderDemo.html';
-            var urlbase = "/Transportation/TransportDetails?option=";
+            var urlbase = "/Transportation/TransportDetails?distributionID=";
             urlbase += distributionId1;
-            //urlbase = urlbase + "&userID=" + 10001;
             urlbase += "&category=" + category;
-            location.replace(urlbase); //在新的标签页打开链接
-            //window.open("");
+            location.replace(urlbase); //替换当前的页面
         }
     </script>
     <style scoped>

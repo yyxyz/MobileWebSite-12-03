@@ -37,15 +37,7 @@
             <p><b>发货地址：</b>#: Source_Addr# </p>
             <p><b> 收货地址：</b>#: Destination_Addr# </p>
             <p><b>发货数量：</b>#: Distribution_Amount#</p>
-             # if(Distribution_State == 0){
-                   var state = "物流已生成";
-                } else if(Distribution_State == 1){
-                    state = "已发货";
-                }  else if (Distribution_State == 2){
-                    state = "已收货";
-                }
-                #
-            <p><b>物流状态：</b>#: state#</p>
+            <p><b>物流状态：</b>#: Distribution_State#</p>
             <p><b>订单生成时间：</b>#:Created_Time#</p>
             <p><b>订单发出时间：</b>#:Send_Time#</p>
             <p><b>收货时间：</b>#: Receive_Time  #</p>
@@ -79,7 +71,7 @@
             if (r != null) return unescape(r[2]); return null;
         }
         var str = location.search;  //获取当前页面url？后面的数值
-        var distributionId = str.GetValue("option");
+        var distributionId = str.GetValue("distributionID");
         var category = str.GetValue("category");
         //alert(distributionId);
         //console.info(select);
