@@ -30,14 +30,14 @@
 
         @* <ul id="filterable-listview"></ul>*@
         <div id="myheader" style="margin-top:2px">
-            <input id="status" style="width:35%;height:25px;" value = "" placeholder="Select status..." />
+            <input id="status" style="width:35%;height:25px;" value="" placeholder="Select status..." />
             <form id="searchForm" action="" method="post">
                 <div style="list-style-type:none">
                     <div id="searchout">
                         <div>
                             <div id="searchform">
                                 <input type="text" id="search_input" name="search">
-                                <div id="searchbutton" onclick="onsearch()"></div>
+                                <div id="searchbutton" onclick="onsearch"></div>
                             </div>
                         </div>
                     </div>
@@ -54,23 +54,31 @@
     <script type="script/x-kendo-template" id="inboxItem">
         <div class="item">
             <div class="item-inside">
-              <p1>订单号：#: orderNum #</p1>
+              <p1 class = "orderNum">订单号：#: orderNum #</p1>
               <a class="reply" data-role="button"  onclick=OrderContent("#:orderID#")
                   >订单详情</a>
             </div>
 
             #if(category==0)
             {#
-                <h4>发布方：#: orderSupplier#</h4>
+                <h4 class ="orderSupplier">发布方：#: orderSupplier#</h4>
             #}else
             {#
-                <h4>承接方：#: orderSupplier#</h4>
+                <h4 class ="orderSupplier">承接方：#: orderSupplier#</h4>
             #}#
-            <h4>订单状态：#: orderStatus#</h4>
+            <h4 class ="orderStatus">订单状态：#: orderStatus#</h4>
          </div>
     </script>
 
     <script>
+        /*用于对form表单-搜索框表单-禁用按回车键搜索
+       */
+        $("#searchForm").keypress(function (e) {
+            if (e.which == 13) {
+                return false;
+            }
+        });
+
         String.prototype.GetValue = function (para) { //将url ？ 后面的链接以&符号进行分割
             var reg = new RegExp("(^|&)" + para + "=([^&]*)(&|$)");
             var r = this.substr(this.indexOf("\?") + 1).match(reg);
@@ -79,24 +87,37 @@
         var str = location.search;  //获取当前页面url？后面的数值
         str = decodeURI(str);   //对url进行解码
         var category = str.GetValue("category");  //区分公司是否为接收方
+        searchValue = str.GetValue("searchValue");  //获取搜索的值
         var select = str.GetValue("select");
-        var orderid = str.GetValue("option");
-        if (select == null) select = 7;
-        // var category = location.search.substr(1).split('&')[0].split('=')[1];
-        //var urlbase = "/OrderDemo/GetOrderList";
-       // console.info("select111 = "+select + " orderid =  "+orderid);
-
-        function OrderContent(orderid) {
-            // alert(orderid);
-            //var category = location.search.substr(1).split('&')[0].split('=')[1];
-            var urlbase = "/OrderDemo/OrderDetails?option=";
-            urlbase += orderid;
-            urlbase += "&category=";
-            urlbase += category;
-            //alert("test");
-            window.location.href = urlbase;
+        switch (select) {
+            case "0":
+                select = 0;
+                break;
+            case "1":
+                select = 1;
+                break;
+            case "2":
+                select = 2;
+                break;
+            case "3":
+                select = 3;
+                break;
+            case "4":
+                select = 4;
+                break;
+            case "5":
+                select = 5;
+                break;
+            case "6":
+                select = 6;
+                break;
+            case "7":
+                select = 7;
+                break;
+            default:
+                select = 7;
         }
-        //var defaultSelect = 0;     
+
         var data = [
                 { text: "合同未签订", value: 0 },
                 { text: "合同已签订", value: 1 },
@@ -111,16 +132,13 @@
         $("#status").kendoComboBox({
             dataTextField: "text",
             dataValueField: "value",
-            dataSource: data,         
-            index: select,         
+            dataSource: data,
             filter: "contains",
             suggest: true,
             select: onSelect,
+            index: select,
         });
 
-        //$("#status").data("kendoComboBox");
-        document.getElementById("status").value = data[select].text;
-        console.info("订单状态 = " + document.getElementById("status").value + " select =  " + select + "  category = " + category + " orderid =  " + orderid);
         var mydataSource = new kendo.data.DataSource({
             transport: {
                 read: {
@@ -130,7 +148,7 @@
                         {
                             option: select,
                             category: category,
-                            content: $('#search_input').val()
+                            content: searchValue
                         },
                     dataType: "json"
                 }
@@ -139,30 +157,23 @@
 
         //把select的值传到后台
         function onSelect(e) {
-            //select = e.item.index();
             var select = this.dataItem(e.item.index());
-            console.info("select = " + select.value + "  ");
-            //defaultSelect = select;
-            location.replace(encodeURI(window.location.pathname + '?option=' + orderid + '&category=' + category
-                  + '&select=' + select.value ));
-            //location.reload();
-            //mydataSource = new kendo.data.DataSource({
-            //    transport: {
-            //        read: {
-            //            type: "POST",
-            //            url: urlbase,
-            //            data:
-            //                {
-            //                    option: select.value(),
-            //                    category: category
-            //                },
-            //            dataType: "json"
-            //        }
-            //    },
-            //});
+            location.replace(encodeURI(window.location.pathname + "?category=" + category
+                 + "&select=" + select.value));
         }
-        function onsearch() {
-           location.reload();
+
+        $("#searchbutton").click(function () {
+            searchValue = document.getElementById("search_input").value;
+            location.replace(encodeURI(window.location.pathname + '?category=' + category
+                   + "&select=" + select + '&searchValue=' + searchValue));
+        });
+
+        function OrderContent(orderid) {
+            var urlbase = "/OrderDemo/OrderDetails?option=";
+            urlbase += orderid;
+            urlbase += "&category=";
+            urlbase += category;
+            window.location.href = urlbase;
         }
     </script>
     <script>
@@ -211,4 +222,3 @@
     </style>
 </body>
 </html>
-
