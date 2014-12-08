@@ -89,33 +89,10 @@
         var category = str.GetValue("category");  //区分公司是否为接收方
         searchValue = str.GetValue("searchValue");  //获取搜索的值
         var select = str.GetValue("select");
-        switch (select) {
-            case "0":
-                select = 0;
-                break;
-            case "1":
-                select = 1;
-                break;
-            case "2":
-                select = 2;
-                break;
-            case "3":
-                select = 3;
-                break;
-            case "4":
-                select = 4;
-                break;
-            case "5":
-                select = 5;
-                break;
-            case "6":
-                select = 6;
-                break;
-            case "7":
-                select = 7;
-                break;
-            default:
-                select = 7;
+        if (select == null) {
+            select = 7;
+        } else {
+            select = parseInt(select);
         }
 
         var data = [
