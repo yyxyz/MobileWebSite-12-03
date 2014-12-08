@@ -37,7 +37,7 @@
                         <div>
                             <div id="searchform">
                                 <input type="text" id="search_input" name="search">
-                                <div id="searchbutton" onclick="onsearch"></div>
+                                <div id="searchbutton"></div>
                             </div>
                         </div>
                     </div>
@@ -87,7 +87,7 @@
         var str = location.search;  //获取当前页面url？后面的数值
         str = decodeURI(str);   //对url进行解码
         var category = str.GetValue("category");  //区分公司是否为接收方
-        searchValue = str.GetValue("searchValue");  //获取搜索的值
+        var searchValue = str.GetValue("searchValue");  //获取搜索的值
         var select = str.GetValue("select");
         if (select == null) {
             select = 7;
