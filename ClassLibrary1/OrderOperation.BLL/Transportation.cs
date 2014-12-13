@@ -280,16 +280,17 @@ namespace MobileWebSite.BLL.OrderOperation.BLL
         //获取公司订单数量信息 
         //category 0代表订单发布方 1代表承接方
         //option 0 代表未完成的物流 1代表已完成的物流
-        public int GetTransporationNum(int EnterpriseId, int category, int option)
+        public int GetTransporationNum(int enterpriseId, int category, int option)
         {
-            int received = 0;
-            int notreceived = 0;
+
             if (category == 0)
             {
+                int received = 0;
+                int notreceived = 0;
                 try
                 {
                     var tempOrderList = orderRep.LoadEntities(Order => Order.ProviderEnterprise_ID
-                        == EnterpriseId).ToList();
+                        == enterpriseId).ToList();
                     foreach (var tempTempOrder in tempOrderList)
                     {
                         var tempTranspotList = transportRep.LoadEntities((
@@ -318,15 +319,17 @@ namespace MobileWebSite.BLL.OrderOperation.BLL
                 }
                 catch (System.Exception ex)
                 {
-                    return 0;
+                    //return ;
                 }
             }
             else if (category == 1)
             {
+                int received = 0;
+                int notreceived = 0;
                 try
                 {
                     var tempOrderList = orderRep.LoadEntities(Order => Order.PublisherEnterprise_ID
-                        == EnterpriseId).ToList();
+                        == enterpriseId).ToList();
                     foreach (var tempTempOrder in tempOrderList)
                     {
                         var tempTranspotList = transportRep.LoadEntities((
@@ -355,12 +358,12 @@ namespace MobileWebSite.BLL.OrderOperation.BLL
                 }
                 catch (System.Exception ex)
                 {
-                    return 0;
+                    //return 0;
                 }
             }
             else
             {
-                return 0;
+                //return 0;
             }
         }
     }
